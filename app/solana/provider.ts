@@ -17,9 +17,11 @@ export const PROGRAM_ID = new PublicKey(
     "AirvENTSubscription111111111111111111111111"
 );
 
-/** Solana 클러스터 (devnet / mainnet-beta) */
-export const CLUSTER: "devnet" | "mainnet-beta" =
-    (import.meta.env.VITE_SOLANA_CLUSTER as "devnet" | "mainnet-beta") || "devnet";
+/** Solana 클러스터 (testnet / devnet / mainnet-beta) */
+export type SolanaCluster = "testnet" | "devnet" | "mainnet-beta";
+
+export const CLUSTER: SolanaCluster =
+    (import.meta.env.VITE_SOLANA_CLUSTER as SolanaCluster) || "testnet";
 
 /** RPC 엔드포인트 (사용자 지정 또는 기본 클러스터) */
 export const RPC_ENDPOINT: string =
@@ -147,6 +149,6 @@ export function getExplorerUrl(
     type: "tx" | "address" = "address"
 ): string {
     const base = "https://explorer.solana.com";
-    const cluster = CLUSTER === "devnet" ? "?cluster=devnet" : "";
-    return `${base}/${type}/${address}${cluster}`;
+    const clusterParam = CLUSTER === "mainnet-beta" ? "" : `?cluster=${CLUSTER}`;
+    return `${base}/${type}/${address}${clusterParam}`;
 }
