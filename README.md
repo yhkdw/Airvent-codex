@@ -46,18 +46,19 @@ Airvent-codex/
 anchor build
 ```
 
-### Devnet 배포
-```bash
-# 지갑 설정
-solana-keygen new -o ~/.config/solana/id.json
-solana config set --url devnet
-solana airdrop 2
+### 배포 (Solana Testnet)
 
-# 배포
-anchor deploy
+로컬 PC의 용량 문제 해결을 위해 **GitHub Codespaces**에서 배포하는 것을 권장합니다.
 
-# 배포 후 Anchor.toml과 lib.rs의 프로그램 ID를 실제 값으로 업데이트
-```
+1. **Codespace 실행**: GitHub 리포지토리 상단의 `Code` -> `Codespaces` -> `Create codespace` 클릭
+2. **배포 스크립트 실행**: 터미널에서 다음 명령 실행
+   ```bash
+   bash scripts/deploy-testnet.sh
+   ```
+3. **Program ID 업데이트**: 배포 완료 후 출력되는 ID를 아래 파일들에 업데이트하세요.
+   - `Anchor.toml`
+   - `programs/airvent_subscription/src/lib.rs` (declare_id)
+   - `app/solana/provider.ts`
 
 ## 🔗 대시보드 연동 방법
 
@@ -79,8 +80,8 @@ app/components/      → src/components/ 에 추가
 ### 3. 환경 변수 (선택)
 `.env` 파일에 추가:
 ```
-VITE_SOLANA_CLUSTER=devnet
-VITE_SOLANA_RPC=https://api.devnet.solana.com
+VITE_SOLANA_CLUSTER=testnet
+VITE_SOLANA_RPC=https://api.testnet.solana.com
 ```
 
 ### 4. DashboardPage에 통합
