@@ -1,0 +1,27 @@
+FROM mcr.microsoft.com/devcontainers/base:ubuntu-22.04
+
+# 의존성 설치
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    pkg-config \
+    libssl-dev \
+    libudev-dev \
+    curl \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+USER vscode
+
+# Rust 설치
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/home/vscode/.cargo/bin:${PATH}"
+
+# Solana CLI 설치
+RUN sh -c "$(curl -sSfL https://release.anza.xyz/stable/install)"
+ENV PATH="/home/vscode/.local/share/solana/install/active_release/bin:${PATH}"
+
+# Anchor CLI 설치 (AVM 사용)
+RUN cargo install --git https://github.com/coral-xyz/anchor avm --locked --force
+RUN avm install latest && avm use latest
+
+CMD ["bash"]
