@@ -8,6 +8,8 @@ RUN apt-get update && apt-get install -y \
     libudev-dev \
     curl \
     git \
+    nodejs \
+    npm \
     && rm -rf /var/lib/apt/lists/*
 
 USER vscode
