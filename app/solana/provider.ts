@@ -14,7 +14,7 @@ import { IDL, AirventSubscription } from "../idl/airvent_subscription";
 
 /** 프로그램 ID — 배포 후 실제 값으로 교체 */
 export const PROGRAM_ID = new PublicKey(
-    "AirvENTSubscription111111111111111111111111"
+    "C245wF5gEDvBzgtskqooaz4yCdqFrgutt1CLub8iLWsF"
 );
 
 /** Solana 클러스터 (testnet / devnet / mainnet-beta) */
