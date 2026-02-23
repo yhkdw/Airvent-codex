@@ -1,0 +1,72 @@
+#!/bin/bash
+# ─────────────────────────────────────────────────────────
+# AirVent Subscription — Solana Devnet 배포 스크립트
+# ─────────────────────────────────────────────────────────
+# 사용법: bash scripts/deploy-devnet.sh
+# 사전 요구: Solana CLI, Anchor CLI, Rust 설치 필요
+
+set -e
+
+echo "═══════════════════════════════════════════════════"
+echo "   AirVent Subscription — Devnet 배포"
+echo "═══════════════════════════════════════════════════"
+echo ""
+
+# PATH 설정 (Codespaces 환경 대응)
+export PATH="/home/vscode/.local/share/solana/install/active_release/bin:$PATH"
+
+# 1. Solana CLI를 Devnet으로 설정
+echo "📡 [1/6] Solana CLI를 Devnet으로 설정 중..."
+solana config set --url https://api.devnet.solana.com
+echo ""
+
+# 2. 키페어 확인 또는 생성
+KEYPAIR_PATH="$HOME/.config/solana/id.json"
+if [ ! -f "$KEYPAIR_PATH" ]; then
+    echo "🔑 [2/6] 키페어가 없습니다. 새로 생성합니다..."
+    solana-keygen new --outfile "$KEYPAIR_PATH" --no-bip39-passphrase
+else
+    echo "🔑 [2/6] 기존 키페어를 사용합니다."
+fi
+
+WALLET_ADDRESS=$(solana address)
+echo "   지갑 주소: $WALLET_ADDRESS"
+echo ""
+
+# 3. Devnet SOL 에어드롭
+echo "💰 [3/6] Devnet SOL 에어드롭 요청 중..."
+solana airdrop 1 --url devnet || echo "   ⚠ 에어드롭 요청이 거부되었습니다. (이미 충분하거나 제한 도달)"
+echo ""
+
+# 4. 잔고 확인
+echo "💳 [4/6] 잔고 확인 중..."
+BALANCE=$(solana balance)
+echo "   현재 잔고: $BALANCE"
+echo ""
+
+# 5. Anchor 빌드
+echo "🔨 [5/6] Anchor 프로젝트 빌드 중..."
+anchor build
+echo ""
+
+# 6. Devnet 배포
+echo "🚀 [6/6] Devnet에 배포 중..."
+anchor deploy --provider.cluster devnet
+
+# 배포된 프로그램 ID 가져오기
+PROGRAM_ID=$(solana address -k target/deploy/airvent_subscription-keypair.json 2>/dev/null || echo "확인 필요")
+
+echo ""
+echo "═══════════════════════════════════════════════════"
+echo "   ✅ 배포 완료!"
+echo "═══════════════════════════════════════════════════"
+echo ""
+echo "   프로그램 ID: $PROGRAM_ID"
+echo "   클러스터:    Devnet"
+echo "   Explorer:    https://explorer.solana.com/address/$PROGRAM_ID?cluster=devnet"
+echo ""
+echo "   ⚠ 다음 파일을 업데이트하세요:"
+echo "     1. Anchor.toml → [programs.devnet] 섹션"
+echo "     2. programs/airvent_subscription/src/lib.rs → declare_id!()"
+echo "     3. dashboard/src/solana/provider.ts → PROGRAM_ID"
+echo ""
