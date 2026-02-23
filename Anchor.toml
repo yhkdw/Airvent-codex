@@ -12,7 +12,7 @@ airvent_subscription = "C245wF5gEDvBzgtskqooaz4yCdqFrgutt1CLub8iLWsF"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "testnet"
+cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
