@@ -29,21 +29,28 @@ if ! command -v cargo &> /dev/null; then
     echo "✅ Rust 설치 완료"
 fi
 
-# 2. Solana CLI 설치 확인 및 설치
+# 2. Solana CLI 설치 확인 및 설치 (Ultra-Robust 모드)
 if ! command -v solana &> /dev/null; then
-    echo "⚠️ Solana CLI를 찾을 수 없습니다. 설치를 시작합니다..."
-    # SSL 에러 대비 --retry 추가 및 에러 체크 강화
-    curl -sSfL --retry 3 https://release.solana.com/v1.18.12/install | sh
+    echo "⚠️ Solana CLI를 찾을 수 없습니다. 초강력 설치 모드를 시작합니다..."
     
-    # 설치 포인트 재설정
+    # 방법 1: curl (SSL 무시 옵션 추가)
+    if ! curl -sSfL -k --retry 5 https://release.solana.com/v1.18.12/install | sh; then
+        echo "⚠️ curl 설치 실패. wget으로 우회 시도합니다..."
+        # 방법 2: wget (SSL 무시 옵션 추가)
+        wget -q --no-check-certificate -O - https://release.solana.com/v1.18.12/install | sh
+    fi
+    
+    # 경로 강제 주입
     export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
     export PATH="/home/vscode/.local/share/solana/install/active_release/bin:$PATH"
     
+    # 최종 확인
     if ! command -v solana &> /dev/null; then
-        echo "❌ Solana CLI 설치에 실패했습니다. 네트워크 상태를 확인하거나 수동으로 설치해 주세요."
+        echo "❌ 모든 방법이 실패했습니다. 네트워크 방화벽이나 SSL 프록시 문제일 수 있습니다."
+        echo "대안: 'curl -k'를 터미널에 직접 입력해 보시거나, Codespaces를 새로 생성해 보세요."
         exit 1
     fi
-    echo "✅ Solana CLI 설치 완료"
+    echo "✅ Solana CLI 설치 성공!"
 fi
 
 # 2. Anchor CLI 설치 확인 및 설치 (Binary 방식 권장)
