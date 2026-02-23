@@ -12,10 +12,32 @@ echo "   AirVent Subscription — Devnet 배포"
 echo "═══════════════════════════════════════════════════"
 echo ""
 
-# PATH 설정 (Codespaces 환경 대응)
-export PATH="/home/vscode/.local/share/solana/install/active_release/bin:$PATH"
+# 1. Rust 및 Cargo 설치 확인
+if ! command -v cargo &> /dev/null; then
+    echo "⚠️ Rust가 설치되어 있지 않습니다. 설치를 시작합니다..."
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    source $HOME/.cargo/env
+    export PATH="$HOME/.cargo/bin:$PATH"
+    echo "✅ Rust 설치 완료"
+fi
 
-# 1. Solana CLI를 Devnet으로 설정
+# 2. Solana CLI 설치 확인 및 설치
+if ! command -v solana &> /dev/null; then
+    echo "⚠️ Solana CLI를 찾을 수 없습니다. 설치를 시작합니다..."
+    sh -c "$(curl -sSfL https://release.solana.com/v1.18.12/install)"
+    export PATH="/home/vscode/.local/share/solana/install/active_release/bin:$PATH"
+    echo "✅ Solana CLI 설치 완료"
+fi
+
+# 2. Anchor CLI 설치 확인 및 설치
+if ! command -v anchor &> /dev/null; then
+    echo "⚠️ Anchor CLI를 찾을 수 없습니다. 설치를 시작합니다..."
+    cargo install --git https://github.com/coral-xyz/anchor --tag v0.30.1 anchor-cli --locked
+    export PATH="/home/vscode/.cargo/bin:$PATH"
+    echo "✅ Anchor CLI 설치 완료"
+fi
+
+# 3. Solana CLI를 Devnet으로 설정
 echo "📡 [1/6] Solana CLI를 Devnet으로 설정 중..."
 solana config set --url https://api.devnet.solana.com
 echo ""
