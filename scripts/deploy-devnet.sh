@@ -12,6 +12,14 @@ echo "   AirVent Subscription — Devnet 배포"
 echo "═══════════════════════════════════════════════════"
 echo ""
 
+# 전역 환경 설정 (PATH 보장)
+export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+export PATH="$HOME/.cargo/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="/home/vscode/.local/share/solana/install/active_release/bin:$PATH"
+export PATH="/home/vscode/.cargo/bin:$PATH"
+export PATH="/home/vscode/.local/bin:$PATH"
+
 # 1. Rust 및 Cargo 설치 확인
 if ! command -v cargo &> /dev/null; then
     echo "⚠️ Rust가 설치되어 있지 않습니다. 설치를 시작합니다..."
