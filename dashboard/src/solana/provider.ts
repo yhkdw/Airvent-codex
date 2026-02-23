@@ -67,18 +67,40 @@ export function getConnection(): Connection {
  * Phantom 지갑이 설치되어 있는지 확인
  */
 export function isPhantomInstalled(): boolean {
-    return typeof window !== "undefined" && !!window.solana?.isPhantom;
+    const solana = (window as any).phantom?.solana || window.solana;
+    return typeof window !== "undefined" && !!solana?.isPhantom;
+}
+
+/**
+ * Phantom 지갑 제공자 가져오기
+ */
+function getPhantomProvider() {
+    if ("phantom" in window) {
+        const anyWindow = window as any;
+        const provider = anyWindow.phantom?.solana;
+        if (provider?.isPhantom) {
+            return provider;
+        }
+    }
+    return window.solana;
 }
 
 /**
  * Phantom 지갑에 연결하고 publicKey를 반환
  */
 export async function connectPhantom(): Promise<PublicKey> {
-    if (!isPhantomInstalled()) {
-        throw new Error("Phantom 지갑이 설치되어 있지 않습니다. https://phantom.app 에서 설치해주세요.");
+    const provider = getPhantomProvider();
+
+    if (!provider?.isPhantom) {
+        throw new Error("Phantom 지갑이 설치되어 있지 않거나 감지되지 않았습니다. https://phantom.app 에서 설치를 확인해 주세요.");
     }
-    const resp = await window.solana!.connect();
-    return resp.publicKey;
+
+    try {
+        const resp = await provider.connect();
+        return resp.publicKey;
+    } catch (err: any) {
+        throw new Error(err.message || "지갑 연결 중 오류가 발생했습니다.");
+    }
 }
 
 /**
