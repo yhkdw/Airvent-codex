@@ -163,9 +163,12 @@ export function getProgram(): Program<any> {
  * 사용자의 구독 상태 PDA 주소를 계산합니다.
  */
 export function getSubscriptionPDA(userPublicKey: PublicKey): [PublicKey, number] {
-    // Expected Buffer 에러 방지를 위해 명시적으로 Uint8Array로 변환하여 처리
-    const seedSubscription = new TextEncoder().encode("subscription");
-    const seedUser = new PublicKey(userPublicKey).toBuffer();
+    // 1. PublicKey 인스턴스 호환성 보장 (re-cast)
+    const ownerPubkey = new PublicKey(userPublicKey.toBase58());
+
+    // 2. 모든 Seed를 명시적으로 Buffer.from()으로 감싸서 'Expected Buffer' 에러 방지
+    const seedSubscription = Buffer.from("subscription");
+    const seedUser = ownerPubkey.toBuffer();
 
     return PublicKey.findProgramAddressSync(
         [seedSubscription, seedUser],
