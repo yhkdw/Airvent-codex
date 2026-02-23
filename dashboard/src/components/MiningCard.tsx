@@ -8,18 +8,17 @@ export default function MiningCard() {
     const [blockHash, setBlockHash] = useState("Waiting...");
     const [solanaTx, setSolanaTx] = useState("");
 
-    // Mining loop
+    // Mining loop - 60 seconds for a full cycle
     useEffect(() => {
         const timer = setInterval(() => {
             setProgress((prev) => {
                 if (prev >= 100) {
-                    // Cycle complete
                     return 0;
                 }
-                // Random speed
-                return prev + Math.random() * 5;
+                // Finish exactly in ~60 seconds (100 / 60 steps)
+                return prev + (100 / 60);
             });
-        }, 100);
+        }, 1000);
 
         return () => clearInterval(timer);
     }, []);
@@ -55,7 +54,7 @@ export default function MiningCard() {
     };
 
     return (
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 relative overflow-hidden">
+        <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 relative overflow-hidden h-full flex flex-col justify-between">
             {/* Background decoration */}
             <div className="absolute top-0 right-0 p-4 opacity-10">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-24 h-24 text-emerald-500">
@@ -63,37 +62,44 @@ export default function MiningCard() {
                 </svg>
             </div>
 
-            <div className="relative z-10">
+            <div className="relative z-10 flex-1 flex flex-col">
                 <div className="flex items-center justify-between mb-4">
                     <div>
-                        <div className="text-xs text-slate-400 font-bold tracking-wider">SOLANA REWARD MINING</div>
-                        <div className="text-lg font-semibold text-slate-100">AirVent Point (AVP)</div>
+                        <div className="text-xs text-slate-400 font-bold tracking-wider underline decoration-emerald-500/30">AI DePIN REWARD MINING</div>
+                        <div className="text-lg font-semibold text-slate-100">AirVent Token (AIVT)</div>
                     </div>
                     <Badge tone={status === "MINING" ? "info" : status === "VALIDATING" ? "warn" : "solana"}>
-                        {status === "SOLANA_CONFIRMED" ? "SOLANA VERIFIED" : status}
+                        {status === "SOLANA_CONFIRMED" ? "ON-CHAIN VERIFIED" : status}
                     </Badge>
                 </div>
 
-                <div className="flex items-baseline gap-2 mb-6">
+                <div className="flex items-baseline gap-2 mb-8 mt-2">
                     <span className="text-4xl font-bold text-emerald-400">{points.toLocaleString()}</span>
-                    <span className="text-sm text-slate-400">Pts</span>
+                    <span className="text-sm text-slate-400 font-medium">AIVT</span>
                 </div>
 
-                {/* Progress Bar Removed as requested */}
-
-                {/* Log */}
-                <div className="mt-4 p-3 bg-slate-950/60 rounded-xl border border-slate-800 text-xs font-mono text-slate-400">
-                    <div className="flex justify-between">
-                        <span>Last Block Hash:</span>
-                        <span className="text-emerald-500">{blockHash}</span>
+                <div className="mt-auto space-y-3">
+                    <div className="flex items-center gap-2 mb-1">
+                        <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Node Mining Stats</div>
                     </div>
-                    <div className="mt-1 flex justify-between">
-                        <span>Solana TxID:</span>
-                        <span className="text-purple-400 font-mono tracking-tight">{solanaTx || "Pending..."}</span>
-                    </div>
-                    <div className="mt-1 flex justify-between">
-                        <span>Validator:</span>
-                        <span>GPT-5.2 Agent</span>
+                    {/* Log */}
+                    <div className="p-3 bg-slate-950/60 rounded-xl border border-slate-800 text-xs font-mono text-slate-400">
+                        <div className="flex justify-between">
+                            <span>ZKP Proof Hash:</span>
+                            <span className="text-emerald-500">{blockHash}</span>
+                        </div>
+                        <div className="mt-1 flex justify-between">
+                            <span>Solana Tx:</span>
+                            <span className="text-purple-400 font-mono tracking-tight">{solanaTx || "Broadcasting..."}</span>
+                        </div>
+                        <div className="mt-1 flex justify-between">
+                            <span>AI Auditor:</span>
+                            <span className="text-cyan-400">Vent-AI v2.1</span>
+                        </div>
+                        <div className="mt-3 pt-2 border-t border-slate-800 flex justify-between opacity-60">
+                            <span>Next Epoch:</span>
+                            <span>~14m 20s</span>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -1,39 +1,31 @@
-import { useMemo, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import Container from "../components/Container";
-import KpiCards from "../components/KpiCards";
-import Alerts from "../components/Alerts";
-import RawTable from "../components/RawTable";
-import AiVerificationPanel from "../components/AiVerificationPanel";
-import { GasChart, PmChart } from "../components/Charts";
-import { getMockAirQualitySeries, downsampleByMinutes } from "../mock/airquality";
+import { useState, useEffect } from "react";
+import { useNavigate, Outlet } from "react-router-dom";
 import { logout } from "../auth";
-import MiningCard from "../components/MiningCard";
-import SubscriptionCard from "../components/SubscriptionCard";
+import DashboardLayout from "../components/DashboardLayout";
 import {
   connectPhantom,
   disconnectPhantom,
-  getWalletPublicKey,
-  isPhantomInstalled
 } from "../solana/provider";
 
 export default function DashboardPage() {
   const nav = useNavigate();
-  const series = useMemo(() => getMockAirQualitySeries(), []);
-  const chartData = useMemo(() => downsampleByMinutes(series, 5), [series]);
-  const latest = series[series.length - 1];
-  const last60 = series.slice(-60);
-
   const [balance, setBalance] = useState(12.34);
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
 
-  // 초기 지갑 상태 확인
+  // 초기 지갑 상태 확인 및 자동 연결
   useEffect(() => {
-    const pubkey = getWalletPublicKey();
-    if (pubkey) {
-      setWalletAddress(pubkey.toString());
-    }
+    const tryAutoConnect = async () => {
+      try {
+        const pubkey = await connectPhantom(true);
+        if (pubkey) {
+          setWalletAddress(pubkey.toString());
+        }
+      } catch (err) {
+        console.error("Auto-connect failed:", err);
+      }
+    };
+    tryAutoConnect();
   }, []);
 
   const handleConnect = async () => {
@@ -53,92 +45,27 @@ export default function DashboardPage() {
     setWalletAddress(null);
   };
 
-  const truncateAddress = (addr: string) => {
-    return `${addr.slice(0, 4)}...${addr.slice(-4)}`;
+  const handleLogout = () => {
+    logout();
+    nav("/login");
+  };
+
+  const handleReward = (amt: number) => {
+    setBalance((b) => Math.round((b + amt) * 100) / 100);
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
-      <header className="sticky top-0 z-10 border-b border-slate-800 bg-slate-950/80 backdrop-blur">
-        <Container>
-          <div className="py-3 flex items-center justify-between gap-3">
-            <div>
-              <div className="text-xs text-slate-400">AirVent DePIN</div>
-              <div className="text-lg font-semibold">Operations Dashboard</div>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="hidden md:block text-right mr-2">
-                <div className="text-xs text-slate-400">Balance</div>
-                <div className="text-sm font-semibold">{balance.toFixed(2)} AiVT</div>
-              </div>
-
-              {walletAddress ? (
-                <div className="flex items-center gap-2">
-                  <div className="text-right hidden sm:block">
-                    <div className="text-xs text-slate-400">Wallet</div>
-                    <div className="text-sm font-mono text-emerald-400">
-                      {truncateAddress(walletAddress)}
-                    </div>
-                  </div>
-                  <button
-                    onClick={handleDisconnect}
-                    className="rounded-xl border border-slate-700 bg-slate-900/60 px-3 py-2 text-sm hover:bg-slate-800 transition-colors"
-                  >
-                    Disconnect
-                  </button>
-                </div>
-              ) : (
-                <button
-                  onClick={handleConnect}
-                  disabled={isConnecting}
-                  className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold hover:bg-emerald-500 disabled:opacity-50 transition-colors"
-                >
-                  {isConnecting ? "Connecting..." : "Connect Wallet"}
-                </button>
-              )}
-
-              <div className="h-8 w-[1px] bg-slate-800 mx-1"></div>
-              <button
-                onClick={() => {
-                  logout();
-                  nav("/login");
-                }}
-                className="rounded-xl border border-slate-700 bg-slate-900/60 px-3 py-2 text-sm hover:bg-slate-900"
-              >
-                Logout
-              </button>
-            </div>
-          </div>
-        </Container>
-      </header>
-
-      <main>
-        <Container>
-          <div className="py-6 space-y-4">
-            <KpiCards latest={latest} />
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-              <div className="lg:col-span-2 space-y-4">
-                <PmChart data={chartData} />
-                <GasChart data={chartData} />
-              </div>
-
-              <div className="lg:col-span-1 space-y-4">
-                <MiningCard />
-                <SubscriptionCard />
-
-                <AiVerificationPanel
-                  onReward={(amt) => setBalance((b) => Math.round((b + amt) * 100) / 100)}
-                />
-
-                <Alerts recent={last60} />
-              </div>
-            </div>
-
-            <RawTable recent={last60} />
-          </div>
-        </Container>
-      </main>
-    </div>
+    <DashboardLayout
+      balance={balance}
+      walletAddress={walletAddress}
+      isConnecting={isConnecting}
+      onConnect={handleConnect}
+      onDisconnect={handleDisconnect}
+      onLogout={handleLogout}
+    >
+      <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <Outlet context={{ onReward: handleReward }} />
+      </div>
+    </DashboardLayout>
   );
 }
