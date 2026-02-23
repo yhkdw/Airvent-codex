@@ -122,9 +122,10 @@ export function getProvider(): AnchorProvider {
 /**
  * Anchor Program 인스턴스를 생성합니다.
  */
-export function getProgram(): Program<AirventSubscription> {
+export function getProgram(): Program<any> {
     const provider = getProvider();
-    return new Program<AirventSubscription>(IDL, PROGRAM_ID, provider);
+    // @ts-ignore - IDL version mismatch
+    return new Program(IDL as any, provider);
 }
 
 // ──────────────────────────────────────────

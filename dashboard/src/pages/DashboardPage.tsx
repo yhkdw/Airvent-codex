@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Container from "../components/Container";
 import KpiCards from "../components/KpiCards";
@@ -10,6 +10,12 @@ import { getMockAirQualitySeries, downsampleByMinutes } from "../mock/airquality
 import { logout } from "../auth";
 import MiningCard from "../components/MiningCard";
 import SubscriptionCard from "../components/SubscriptionCard";
+import {
+  connectPhantom,
+  disconnectPhantom,
+  getWalletPublicKey,
+  isPhantomInstalled
+} from "../solana/provider";
 
 export default function DashboardPage() {
   const nav = useNavigate();
@@ -19,6 +25,37 @@ export default function DashboardPage() {
   const last60 = series.slice(-60);
 
   const [balance, setBalance] = useState(12.34);
+  const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  const [isConnecting, setIsConnecting] = useState(false);
+
+  // 초기 지갑 상태 확인
+  useEffect(() => {
+    const pubkey = getWalletPublicKey();
+    if (pubkey) {
+      setWalletAddress(pubkey.toString());
+    }
+  }, []);
+
+  const handleConnect = async () => {
+    try {
+      setIsConnecting(true);
+      const pubkey = await connectPhantom();
+      setWalletAddress(pubkey.toString());
+    } catch (err: any) {
+      alert(err.message || "Failed to connect wallet");
+    } finally {
+      setIsConnecting(false);
+    }
+  };
+
+  const handleDisconnect = async () => {
+    await disconnectPhantom();
+    setWalletAddress(null);
+  };
+
+  const truncateAddress = (addr: string) => {
+    return `${addr.slice(0, 4)}...${addr.slice(-4)}`;
+  };
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
@@ -30,10 +67,37 @@ export default function DashboardPage() {
               <div className="text-lg font-semibold">Operations Dashboard</div>
             </div>
             <div className="flex items-center gap-2">
-              <div className="hidden md:block text-right">
-                <div className="text-xs text-slate-400">Wallet</div>
+              <div className="hidden md:block text-right mr-2">
+                <div className="text-xs text-slate-400">Balance</div>
                 <div className="text-sm font-semibold">{balance.toFixed(2)} AiVT</div>
               </div>
+
+              {walletAddress ? (
+                <div className="flex items-center gap-2">
+                  <div className="text-right hidden sm:block">
+                    <div className="text-xs text-slate-400">Wallet</div>
+                    <div className="text-sm font-mono text-emerald-400">
+                      {truncateAddress(walletAddress)}
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleDisconnect}
+                    className="rounded-xl border border-slate-700 bg-slate-900/60 px-3 py-2 text-sm hover:bg-slate-800 transition-colors"
+                  >
+                    Disconnect
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={handleConnect}
+                  disabled={isConnecting}
+                  className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold hover:bg-emerald-500 disabled:opacity-50 transition-colors"
+                >
+                  {isConnecting ? "Connecting..." : "Connect Wallet"}
+                </button>
+              )}
+
+              <div className="h-8 w-[1px] bg-slate-800 mx-1"></div>
               <button
                 onClick={() => {
                   logout();

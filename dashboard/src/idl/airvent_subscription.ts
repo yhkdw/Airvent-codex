@@ -74,6 +74,13 @@ export type AirventSubscription = {
         { code: 6004; name: "PointsOverflow"; msg: "포인트 오버플로우가 발생했습니다." },
         { code: 6005; name: "InvalidHardwareSerial"; msg: "하드웨어 시리얼이 유효하지 않습니다. (1~64자)" }
     ];
+    address: string;
+    metadata: {
+        name: string;
+        version: string;
+        spec: string;
+        description?: string;
+    };
 };
 
 /** IDL JSON 객체 — Anchor Program 초기화에 사용 */
@@ -143,4 +150,10 @@ export const IDL: AirventSubscription = {
         { code: 6004, name: "PointsOverflow", msg: "포인트 오버플로우가 발생했습니다." },
         { code: 6005, name: "InvalidHardwareSerial", msg: "하드웨어 시리얼이 유효하지 않습니다. (1~64자)" },
     ],
+    address: "C245wF5gEDvBzgtskqooaz4yCdqFrgutt1CLub8iLWsF",
+    metadata: {
+        name: "airvent_subscription",
+        version: "0.1.0",
+        spec: "0.1.0",
+    },
 };

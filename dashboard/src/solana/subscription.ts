@@ -52,16 +52,17 @@ export async function getUserSubscription(
     try {
         const program = getProgram();
         const [pda] = getSubscriptionPDA(userPublicKey);
+        // @ts-ignore
         const account = await program.account.userState.fetch(pda);
 
         return {
-            owner: account.owner.toBase58(),
-            authority: account.authority.toBase58(),
-            isPremium: account.isPremium,
-            offchainPoints: (account.offchainPoints as BN).toNumber(),
-            hardwareId: account.hardwareId,
-            hasHardware: account.hasHardware,
-            joinedAt: new Date((account.joinedAt as BN).toNumber() * 1000),
+            owner: (account as any).owner.toBase58(),
+            authority: (account as any).authority.toBase58(),
+            isPremium: (account as any).isPremium,
+            offchainPoints: ((account as any).offchainPoints as BN).toNumber(),
+            hardwareId: (account as any).hardwareId,
+            hasHardware: (account as any).hasHardware,
+            joinedAt: new Date(((account as any).joinedAt as BN).toNumber() * 1000),
             address: pda.toBase58(),
             explorerUrl: getExplorerUrl(pda.toBase58()),
         };
@@ -101,6 +102,7 @@ export async function initializeFreeSubscription(
     const user = program.provider.publicKey!;
     const [userStatePDA] = getSubscriptionPDA(user);
 
+    // @ts-ignore
     const sig = await program.methods
         .initializeFreeSubscription()
         .accounts({
@@ -136,6 +138,7 @@ export async function earnFreePoints(
     const authority = program.provider.publicKey!;
     const [userStatePDA] = getSubscriptionPDA(ownerPublicKey);
 
+    // @ts-ignore
     const sig = await program.methods
         .earnFreePoints(new BN(points))
         .accounts({
@@ -167,6 +170,7 @@ export async function upgradeToPremium(
     const user = program.provider.publicKey!;
     const [userStatePDA] = getSubscriptionPDA(user);
 
+    // @ts-ignore
     const sig = await program.methods
         .upgradeToPremium(hardwareSerial)
         .accounts({
@@ -193,6 +197,7 @@ export async function downgradeFromPremium(): Promise<TxResult> {
     const user = program.provider.publicKey!;
     const [userStatePDA] = getSubscriptionPDA(user);
 
+    // @ts-ignore
     const sig = await program.methods
         .downgradeFromPremium()
         .accounts({
