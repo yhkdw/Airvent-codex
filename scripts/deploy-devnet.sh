@@ -35,9 +35,14 @@ if ! command -v solana &> /dev/null; then
     
     # 방법 1: curl (SSL 무시 옵션 추가)
     if ! curl -sSfL -k --retry 5 https://release.solana.com/v1.18.12/install | sh; then
-        echo "⚠️ curl 설치 실패. wget으로 우회 시도합니다..."
-        # 방법 2: wget (SSL 무시 옵션 추가)
-        wget -q --no-check-certificate -O - https://release.solana.com/v1.18.12/install | sh
+        echo "⚠️ 설치 스크립트 실행 실패. 바이너리 직접 다운로드로 우회합니다..."
+        # 방법 2: tarball 직접 다운로드 (가장 확실한 방법)
+        mkdir -p ~/.local/share/solana/install
+        cd ~/.local/share/solana/install
+        wget -q --no-check-certificate https://github.com/solana-labs/solana/releases/download/v1.18.12/solana-release-x86_64-unknown-linux-gnu.tar.bz2
+        tar jxf solana-release-x86_64-unknown-linux-gnu.tar.bz2
+        mv solana-release active_release
+        cd - > /dev/null
     fi
     
     # 경로 강제 주입
@@ -46,8 +51,8 @@ if ! command -v solana &> /dev/null; then
     
     # 최종 확인
     if ! command -v solana &> /dev/null; then
-        echo "❌ 모든 방법이 실패했습니다. 네트워크 방화벽이나 SSL 프록시 문제일 수 있습니다."
-        echo "대안: 'curl -k'를 터미널에 직접 입력해 보시거나, Codespaces를 새로 생성해 보세요."
+        echo "❌ 모든 방법이 실패했습니다. 네트워크 방화벽 문제일 수 있습니다."
+        echo "대안: Codespaces를 'Full Rebuild' 하시거나 새로 생성해 보세요."
         exit 1
     fi
     echo "✅ Solana CLI 설치 성공!"
