@@ -32,8 +32,17 @@ fi
 # 2. Solana CLI 설치 확인 및 설치
 if ! command -v solana &> /dev/null; then
     echo "⚠️ Solana CLI를 찾을 수 없습니다. 설치를 시작합니다..."
-    sh -c "$(curl -sSfL https://release.solana.com/v1.18.12/install)"
+    # SSL 에러 대비 --retry 추가 및 에러 체크 강화
+    curl -sSfL --retry 3 https://release.solana.com/v1.18.12/install | sh
+    
+    # 설치 포인트 재설정
+    export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
     export PATH="/home/vscode/.local/share/solana/install/active_release/bin:$PATH"
+    
+    if ! command -v solana &> /dev/null; then
+        echo "❌ Solana CLI 설치에 실패했습니다. 네트워크 상태를 확인하거나 수동으로 설치해 주세요."
+        exit 1
+    fi
     echo "✅ Solana CLI 설치 완료"
 fi
 
