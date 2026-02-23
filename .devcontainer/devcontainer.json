@@ -19,6 +19,6 @@
             "version": "latest"
         }
     },
-    "postCreateCommand": "echo '환경 설정 완료! 대시보드 실행을 시작하세요.'",
+    "postCreateCommand": "sh -c \"$(curl -sSfL https://release.solana.com/v1.18.12/install)\" && export PATH=\"/home/vscode/.local/share/solana/install/active_release/bin:$PATH\" && cargo install --git https://github.com/coral-xyz/anchor --tag v0.30.1 anchor-cli --locked",
     "remoteUser": "vscode"
 }
