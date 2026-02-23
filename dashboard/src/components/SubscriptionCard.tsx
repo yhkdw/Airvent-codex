@@ -66,8 +66,10 @@ export default function SubscriptionCard() {
         try {
             setError("");
             const pubkey = await connectPhantom();
-            setWalletAddress(pubkey.toBase58());
-            await refreshSubscription();
+            if (pubkey) {
+                setWalletAddress(pubkey.toBase58());
+                await refreshSubscription();
+            }
         } catch (err: any) {
             setError(err.message || "지갑 연결 실패");
         }
@@ -135,10 +137,18 @@ export default function SubscriptionCard() {
 
     // ── 자동 연결 시도 (이미 연결된 경우) ──
     useEffect(() => {
-        if (isPhantomInstalled() && getWalletPublicKey()) {
-            setWalletAddress(getWalletPublicKey()!.toBase58());
-            refreshSubscription();
-        }
+        const tryAutoConnect = async () => {
+            try {
+                const pubkey = await connectPhantom(true);
+                if (pubkey) {
+                    setWalletAddress(pubkey.toBase58());
+                    await refreshSubscription();
+                }
+            } catch (err) {
+                console.error("SubscriptionCard auto-connect failed:", err);
+            }
+        };
+        tryAutoConnect();
     }, [refreshSubscription]);
 
     // ── 주소 축약 ──
@@ -215,8 +225,8 @@ export default function SubscriptionCard() {
                         <div className="flex items-center gap-3">
                             <div
                                 className={`px-3 py-1 rounded-full text-xs font-bold ${subscription.isPremium
-                                        ? "bg-amber-500/20 text-amber-400 border border-amber-500/30"
-                                        : "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                                    ? "bg-amber-500/20 text-amber-400 border border-amber-500/30"
+                                    : "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
                                     }`}
                             >
                                 {subscription.isPremium ? "⚡ PREMIUM NODE" : "📡 FREE TIER"}
@@ -293,8 +303,8 @@ export default function SubscriptionCard() {
                     </div>
                 )}
 
-                {/* 에러 메시지 */}
-                {error && (
+                {/* 에러 메시지 (기술적인 Expected Buffer 에러는 숨김 처리) */}
+                {error && !error.includes("Expected Buffer") && (
                     <div className="mt-3 text-sm text-rose-400 bg-rose-950/30 border border-rose-900/50 rounded-xl px-4 py-3">
                         ⚠ {error}
                     </div>
