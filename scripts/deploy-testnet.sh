@@ -34,8 +34,11 @@ echo ""
 echo "💰 [3/6] Testnet SOL 에어드롭 요청 중..."
 echo "   (Testnet은 에어드롭이 제한적일 수 있습니다)"
 solana airdrop 1 --url https://api.testnet.solana.com || {
-    echo "   ⚠ 에어드롭 실패. Solana Faucet을 사용하세요:"
-    echo "   https://faucet.solana.com/ (Testnet 선택)"
+    echo "   ⚠ 에어드롭 요청이 거부되었습니다. (테스트넷 제한)"
+    echo "   🔗 브라우저에서 아래 링크를 열어 수동으로 에어드롭을 받으세요:"
+    echo "      https://faucet.solana.com/ (주소: $WALLET_ADDRESS, Testnet 선택)"
+    echo ""
+    read -p "   에어드롭을 받으셨다면 [Enter]를 눌러 진행하세요..."
 }
 echo ""
 
