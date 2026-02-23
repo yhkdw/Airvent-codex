@@ -29,11 +29,12 @@ if ! command -v solana &> /dev/null; then
     echo "✅ Solana CLI 설치 완료"
 fi
 
-# 2. Anchor CLI 설치 확인 및 설치
+# 2. Anchor CLI 설치 확인 및 설치 (Binary 방식 권장)
 if ! command -v anchor &> /dev/null; then
-    echo "⚠️ Anchor CLI를 찾을 수 없습니다. 설치를 시작합니다..."
-    cargo install --git https://github.com/coral-xyz/anchor --tag v0.30.1 anchor-cli --locked
-    export PATH="/home/vscode/.cargo/bin:$PATH"
+    echo "⚠️ Anchor CLI를 찾을 수 없습니다. npm을 통해 바이너리 설치를 시작합니다..."
+    # npm으로 설치하면 컴파일 과정 없이 바이너리를 바로 내려받아 에러를 방지합니다.
+    npm install -g @coral-xyz/anchor-cli@0.30.1 --prefix ~/.local
+    export PATH="$HOME/.local/bin:$PATH"
     echo "✅ Anchor CLI 설치 완료"
 fi
 
