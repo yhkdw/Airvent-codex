@@ -20,8 +20,7 @@ ENV PATH="/home/vscode/.cargo/bin:${PATH}"
 RUN sh -c "$(curl -sSfL https://release.anza.xyz/stable/install)"
 ENV PATH="/home/vscode/.local/share/solana/install/active_release/bin:${PATH}"
 
-# Anchor CLI 설치 (AVM 사용)
-RUN cargo install --git https://github.com/coral-xyz/anchor avm --locked --force
-RUN avm install latest && avm use latest
+# Anchor CLI 설치 (소스에서 빌드하여 현재 OS GLIBC에 맞춤)
+RUN cargo install --git https://github.com/coral-xyz/anchor anchor-cli --locked --force
 
 CMD ["bash"]
