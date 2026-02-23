@@ -12,6 +12,13 @@ echo "   AirVent Subscription — Testnet 배포"
 echo "═══════════════════════════════════════════════════"
 echo ""
 
+# 0. 디버깅 정보 (필요시)
+echo "💻 [0/6] 시스템 환경 확인 중..."
+lsb_release -a 2>/dev/null | grep Description || cat /etc/os-release | grep PRETTY_NAME
+echo "   Anchor 위치: $(which anchor || echo "찾을 수 없음")"
+echo "   Anchor 버전: $(anchor --version 2>/dev/null || echo "실행 불가")"
+echo ""
+
 # 1. Solana CLI를 Testnet으로 설정
 echo "📡 [1/6] Solana CLI를 Testnet으로 설정 중..."
 solana config set --url https://api.testnet.solana.com
