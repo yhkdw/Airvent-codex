@@ -79,19 +79,7 @@ export default function MiningCard() {
                     <span className="text-sm text-slate-400">Pts</span>
                 </div>
 
-                {/* Progress Bar */}
-                <div className="space-y-2">
-                    <div className="flex justify-between text-xs text-slate-400">
-                        <span>Current Block Process</span>
-                        <span>{Math.round(progress)}%</span>
-                    </div>
-                    <div className="h-3 w-full bg-slate-950 rounded-full overflow-hidden border border-slate-800">
-                        <div
-                            className={`h-full transition-all duration-300 ${getStatusColor()}`}
-                            style={{ width: `${progress}%` }}
-                        />
-                    </div>
-                </div>
+                {/* Progress Bar Removed as requested */}
 
                 {/* Log */}
                 <div className="mt-4 p-3 bg-slate-950/60 rounded-xl border border-slate-800 text-xs font-mono text-slate-400">

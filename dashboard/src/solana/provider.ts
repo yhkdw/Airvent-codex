@@ -6,6 +6,7 @@
  */
 import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
 import { AnchorProvider, Program } from "@coral-xyz/anchor";
+import { Buffer } from "buffer";
 import { IDL, AirventSubscription } from "../idl/airvent_subscription";
 
 // ──────────────────────────────────────────
@@ -67,14 +68,16 @@ export function getConnection(): Connection {
  * Phantom 지갑이 설치되어 있는지 확인
  */
 export function isPhantomInstalled(): boolean {
-    const solana = (window as any).phantom?.solana || window.solana;
-    return typeof window !== "undefined" && !!solana?.isPhantom;
+    const solana = getPhantomProvider();
+    return !!solana?.isPhantom;
 }
 
 /**
  * Phantom 지갑 제공자 가져오기
  */
 function getPhantomProvider() {
+    if (typeof window === "undefined") return null;
+
     if ("phantom" in window) {
         const anyWindow = window as any;
         const provider = anyWindow.phantom?.solana;
@@ -88,17 +91,19 @@ function getPhantomProvider() {
 /**
  * Phantom 지갑에 연결하고 publicKey를 반환
  */
-export async function connectPhantom(): Promise<PublicKey> {
+export async function connectPhantom(onlyIfTrusted = false): Promise<PublicKey> {
     const provider = getPhantomProvider();
 
     if (!provider?.isPhantom) {
+        if (onlyIfTrusted) return null as any; // Silent fail for auto-connect
         throw new Error("Phantom 지갑이 설치되어 있지 않거나 감지되지 않았습니다. https://phantom.app 에서 설치를 확인해 주세요.");
     }
 
     try {
-        const resp = await provider.connect();
+        const resp = await provider.connect(onlyIfTrusted ? { onlyIfTrusted: true } : undefined);
         return resp.publicKey;
     } catch (err: any) {
+        if (onlyIfTrusted) return null as any; // Silent fail for auto-connect
         throw new Error(err.message || "지갑 연결 중 오류가 발생했습니다.");
     }
 }
@@ -158,8 +163,12 @@ export function getProgram(): Program<any> {
  * 사용자의 구독 상태 PDA 주소를 계산합니다.
  */
 export function getSubscriptionPDA(userPublicKey: PublicKey): [PublicKey, number] {
+    // Expected Buffer 에러 방지를 위해 명시적으로 Uint8Array로 변환하여 처리
+    const seedSubscription = new TextEncoder().encode("subscription");
+    const seedUser = new PublicKey(userPublicKey).toBuffer();
+
     return PublicKey.findProgramAddressSync(
-        [Buffer.from("subscription"), userPublicKey.toBuffer()],
+        [seedSubscription, seedUser],
         PROGRAM_ID
     );
 }
