@@ -347,7 +347,7 @@ export default function LandingPage() {
 
                     <Link
                       to="/login"
-                      className="inline-block rounded-xl bg-emerald-500 text-slate-950 font-bold px-8 py-3 text-lg hover:bg-emerald-400 transition shadow-lg shadow-emerald-500/20 transform hover:-translate-y-0.5"
+                      className="inline-flex items-center justify-center min-w-[240px] rounded-xl bg-emerald-500 text-slate-950 font-bold px-8 py-4 text-lg hover:bg-emerald-400 transition shadow-lg shadow-emerald-500/20 transform hover:-translate-y-0.5"
                     >
                       {text.btnNode}
                     </Link>
@@ -385,14 +385,6 @@ export default function LandingPage() {
                           <div className="mt-1 text-sm text-emerald-400 font-medium">
                             +${(p.credits / 100).toFixed(0)} {text.unit}
                           </div>
-                          <ul className="mt-6 space-y-3">
-                            {p.perks.map((pk: string, j: number) => (
-                              <li key={j} className="flex items-start gap-2 text-sm text-slate-300">
-                                <span className="mt-0.5 text-indigo-400">✓</span>
-                                {pk}
-                              </li>
-                            ))}
-                          </ul>
                         </div>
                       ))}
                     </div>
@@ -403,7 +395,7 @@ export default function LandingPage() {
                       </div>
                       <Link
                         to="/login"
-                        className="inline-block rounded-xl bg-indigo-500 text-white font-bold px-8 py-3 text-lg hover:bg-indigo-400 transition shadow-lg shadow-indigo-500/20 transform hover:-translate-y-0.5"
+                        className="inline-flex items-center justify-center min-w-[240px] rounded-xl bg-indigo-500 text-white font-bold px-8 py-4 text-lg hover:bg-indigo-400 transition shadow-lg shadow-indigo-500/20 transform hover:-translate-y-0.5"
                       >
                         {text.btnSubscription}
                       </Link>
