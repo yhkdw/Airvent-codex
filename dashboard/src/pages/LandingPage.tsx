@@ -288,8 +288,11 @@ export default function LandingPage() {
                     i % 2 === 1 ? <strong key={i} className="text-emerald-400 font-bold">{part}</strong> : part
                   )}
                 </p>
+              </div>
 
-                <ProductSpecs lang={lang} />
+              <ProductSpecs lang={lang} />
+
+              <div className="max-w-6xl mx-auto text-center mt-10">
 
                 {/* How it Works Section */}
                 <section id="how-it-works" className="mt-32 scroll-mt-24">
@@ -409,7 +412,7 @@ export default function LandingPage() {
                       <div className="text-xs text-sky-400 font-bold tracking-widest uppercase mb-2">Announcements</div>
                       <h2 className="text-3xl font-bold text-white mb-4">{text.newsTitle}</h2>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                       {text.newsItems.map((news: any, i: number) => (
                         <div key={i} className="bg-slate-900/40 border border-slate-800 rounded-3xl p-8 hover:bg-slate-800/40 transition-all group">
                           <div className="flex items-center justify-between mb-6">
