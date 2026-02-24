@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Wind, Activity, BrainCircuit, ShieldCheck, Zap, LayoutDashboard, LogOut, Wallet, ChevronRight } from 'lucide-react';
-import { login } from '../auth';
+import { loginWithEmail } from '../auth';
 
 // --- 1. 로그인 페이지 ---
 const LoginPage = ({ onLogin, onBack }: { onLogin: () => void, onBack: () => void }) => {
@@ -9,14 +9,16 @@ const LoginPage = ({ onLogin, onBack }: { onLogin: () => void, onBack: () => voi
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError('');
 
         // Use the centralized login function
-        if (login(email, password)) {
+        const { error: loginErr } = await loginWithEmail(email, password);
+        if (!loginErr) {
             onLogin();
         } else {
-            setError('계정 정보가 일치하지 않습니다.');
+            setError(loginErr.message || '계정 정보가 일치하지 않습니다.');
         }
     };
 

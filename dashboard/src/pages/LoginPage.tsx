@@ -1,12 +1,18 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { login, TEST_EMAIL } from "../auth";
+import { loginWithEmail, loginWithSocial } from "../auth";
 
 export default function LoginPage() {
   const nav = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSocialLogin = async (provider: 'google' | 'twitter' | 'naver' | 'kakao') => {
+    const { error } = await loginWithSocial(provider);
+    if (error) setError(error.message);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-950 text-slate-100 p-4">
@@ -19,12 +25,14 @@ export default function LoginPage() {
 
         <form
           className="mt-6 space-y-4"
-          onSubmit={(e) => {
+          onSubmit={async (e) => {
             e.preventDefault();
             setError("");
-            const ok = login(email, password);
-            if (!ok) {
-              setError("계정 정보가 일치하지 않거나 서버 설정이 올바르지 않습니다.");
+            setLoading(true);
+            const { error: loginErr } = await loginWithEmail(email, password);
+            setLoading(false);
+            if (loginErr) {
+              setError(loginErr.message || "계정 정보가 일치하지 않거나 서버 설정이 올바르지 않습니다.");
             } else {
               nav("/dashboard");
             }
@@ -33,23 +41,25 @@ export default function LoginPage() {
           <label className="block">
             <div className="text-sm text-slate-300 mb-1.5 font-medium">Email</div>
             <input
-              className="w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-3 outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all"
+              className="w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-3 outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all font-mono text-sm"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="name@example.com"
               autoComplete="email"
+              disabled={loading}
             />
           </label>
 
           <label className="block">
             <div className="text-sm text-slate-300 mb-1.5 font-medium">Password</div>
             <input
-              className="w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-3 outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all"
+              className="w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-3 outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all font-mono text-sm"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               type="password"
               autoComplete="current-password"
+              disabled={loading}
             />
           </label>
 
@@ -64,13 +74,54 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            className="w-full rounded-xl bg-emerald-500 text-slate-950 font-bold py-3.5 mt-2 hover:bg-emerald-400 transition shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/20 transform hover:-translate-y-0.5"
+            disabled={loading}
+            className="w-full rounded-xl bg-emerald-500 text-slate-950 font-extrabold py-3.5 mt-2 hover:bg-emerald-400 transition shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/20 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:transform-none"
           >
-            Sign In
+            {loading ? "Signing In..." : "Sign In"}
           </button>
 
-          <div className="flex items-center justify-center mt-6">
-            <Link to="/" className="text-sm text-slate-500 hover:text-slate-300 transition">
+          {/* Social Logins */}
+          <div className="mt-8">
+            <div className="relative flex items-center py-4">
+              <div className="flex-grow border-t border-slate-800"></div>
+              <span className="flex-shrink mx-4 text-xs font-bold text-slate-600 uppercase tracking-widest">Social Login</span>
+              <div className="flex-grow border-t border-slate-800"></div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 mt-4">
+              <button
+                type="button"
+                onClick={() => handleSocialLogin('google')}
+                className="flex items-center justify-center gap-2 rounded-xl bg-white/5 border border-slate-800 py-3 text-sm font-semibold hover:bg-white/10 transition"
+              >
+                Google
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSocialLogin('twitter')}
+                className="flex items-center justify-center gap-2 rounded-xl bg-white/5 border border-slate-800 py-3 text-sm font-semibold hover:bg-white/10 transition"
+              >
+                X (Twitter)
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSocialLogin('naver')}
+                className="flex items-center justify-center gap-2 rounded-xl bg-[#03C75A]/20 border border-[#03C75A]/30 py-3 text-sm font-semibold hover:bg-[#03C75A]/30 transition text-[#03C75A]"
+              >
+                Naver
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSocialLogin('kakao')}
+                className="flex items-center justify-center gap-2 rounded-xl bg-[#FEE500]/20 border border-[#FEE500]/30 py-3 text-sm font-semibold hover:bg-[#FEE500]/30 transition text-[#3C1E1E]"
+              >
+                Kakao
+              </button>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-center mt-8">
+            <Link to="/" className="text-xs font-bold text-slate-500 hover:text-slate-300 transition uppercase tracking-widest underline underline-offset-4">
               ← Back to Home
             </Link>
           </div>

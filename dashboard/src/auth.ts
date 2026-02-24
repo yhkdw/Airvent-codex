@@ -1,26 +1,30 @@
-// Credentials are managed via .env
-// We trim and lowercase here for consistency
+import { supabase } from "./lib/supabaseClient";
+
+// Credentials are kept for fallback/dev if needed, but primary auth moves to Supabase
 export const TEST_EMAIL = (import.meta.env.VITE_JUDGE_EMAIL || "judge@primer.kr").trim().toLowerCase();
 export const TEST_PASSWORD = (import.meta.env.VITE_JUDGE_PASSWORD || "airvent2026").trim();
 
-const KEY = "airvent_auth_v1";
-
-export function isAuthed(): boolean {
-  return localStorage.getItem(KEY) === "1";
+export async function isAuthed(): Promise<boolean> {
+  const { data: { session } } = await supabase.auth.getSession();
+  return !!session;
 }
 
-export function login(email: string, password: string): boolean {
-  const inputEmail = email.trim().toLowerCase();
-  const inputPassword = password.trim();
-
-  const ok = inputEmail === TEST_EMAIL && inputPassword === TEST_PASSWORD;
-
-  if (ok) {
-    localStorage.setItem(KEY, "1");
-  }
-  return ok;
+export async function loginWithEmail(email: string, password: string) {
+  return await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
 }
 
-export function logout(): void {
-  localStorage.removeItem(KEY);
+export async function loginWithSocial(provider: 'google' | 'twitter' | 'naver' | 'kakao') {
+  return await supabase.auth.signInWithOAuth({
+    provider: provider as any,
+    options: {
+      redirectTo: window.location.origin + '/dashboard'
+    }
+  });
+}
+
+export async function logout(): Promise<void> {
+  await supabase.auth.signOut();
 }

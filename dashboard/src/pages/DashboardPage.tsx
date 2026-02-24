@@ -45,8 +45,8 @@ export default function DashboardPage() {
     setWalletAddress(null);
   };
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     nav("/login");
   };
 
