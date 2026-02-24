@@ -18,7 +18,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-slate-950 text-slate-100 p-4">
       <div className="w-full max-w-md rounded-2xl bg-slate-900/60 border border-slate-800 p-6 shadow-xl">
         <div className="text-xs text-emerald-400 font-semibold tracking-wider mb-2">ACCESS CONTROL</div>
-        <h1 className="text-2xl font-bold mt-2 text-slate-100">AirVent Dashboard</h1>
+        <h1 className="text-2xl font-bold mt-2 text-slate-100">Airvent DePIN</h1>
         <p className="text-sm text-slate-400 mt-2">
           사용자 계정으로 로그인하세요.
         </p>
