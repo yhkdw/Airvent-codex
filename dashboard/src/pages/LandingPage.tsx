@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Wind } from "lucide-react";
 import Container from "../components/Container";
 import ProductSpecs from "../components/ProductSpecs";
+
+const isLocal: boolean = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
 
 export default function LandingPage() {
   const [lang, setLang] = useState<"ko" | "en">("ko");
 
-  const t = {
+  const t: Record<string, any> = {
     ko: {
       headerSubtitle: "Hyperlocal Air Quality Network",
       login: "로그인",
@@ -220,13 +223,32 @@ export default function LandingPage() {
           <Container>
             <div className="py-4 flex items-center justify-between">
               <div className="flex items-center gap-8">
-                <div>
-                  <div className="text-xs text-slate-400">AirVent DePIN</div>
-                  <div className="text-lg font-semibold">{text.headerSubtitle}</div>
-                </div>
+                <a
+                  href="https://github.com/yhkdw/airvent-team.git"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 group transition-transform hover:scale-[1.02]"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-cyan-400 flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:shadow-emerald-500/40 transition-all duration-300">
+                    <Wind size={22} className="text-slate-950" />
+                  </div>
+                  <div className="hidden sm:block">
+                    <div className="text-[10px] text-slate-500 font-black uppercase tracking-[0.2em] leading-none mb-1">Airvent DePIN</div>
+                    <div className="text-sm font-black text-white uppercase tracking-wider group-hover:text-emerald-400 transition-colors">Team Codex</div>
+                  </div>
+                </a>
                 <nav className="hidden md:flex items-center gap-6">
                   <a href="#how-it-works" className="text-sm font-medium text-slate-400 hover:text-emerald-400 transition-colors">{text.howItWorks}</a>
                   <a href="#network-news" className="text-sm font-medium text-slate-400 hover:text-emerald-400 transition-colors">{text.networkNews}</a>
+                  {isLocal && (
+                    <Link
+                      to="/judge"
+                      className="text-[10px] font-black text-sky-400 hover:text-sky-300 transition-all border border-sky-400/20 bg-sky-400/5 px-2.5 py-1.5 rounded-lg uppercase tracking-wider flex items-center gap-2"
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse"></span>
+                      Airvent AI (Demo)
+                    </Link>
+                  )}
                 </nav>
               </div>
               <div className="flex items-center gap-4">
@@ -265,7 +287,7 @@ export default function LandingPage() {
                   <span className="text-sky-400">{text.heroTitleSuffix}</span> {text.heroTitleEnd}
                 </h1>
                 <p className="text-slate-300 text-lg mb-10 max-w-2xl mx-auto whitespace-pre-line">
-                  {text.heroDesc.split(/\*\*(.*?)\*\*/g).map((part, i) =>
+                  {text.heroDesc.split(/\*\*(.*?)\*\*/g).map((part: string, i: number) =>
                     i % 2 === 1 ? <strong key={i} className="text-emerald-400 font-bold">{part}</strong> : part
                   )}
                 </p>
@@ -279,7 +301,7 @@ export default function LandingPage() {
                     <h2 className="text-3xl font-bold text-white mb-4">{text.howItWorksTitle}</h2>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                    {text.steps.map((step, i) => (
+                    {text.steps.map((step: any, i: number) => (
                       <div key={i} className="relative group">
                         <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 h-full hover:border-emerald-500/30 transition-all hover:bg-slate-800/40">
                           <div className="text-4xl mb-4 grayscale group-hover:grayscale-0 transition-all">{step.icon}</div>
@@ -319,7 +341,7 @@ export default function LandingPage() {
                           ...text.plans[2],
                           price: 4900,
                         }
-                      ].map((p, i) => (
+                      ].map((p: any, i: number) => (
                         <div key={i} className="rounded-2xl bg-slate-950/50 p-6 border border-slate-800 backdrop-blur-sm hover:border-indigo-500/30 transition">
                           <div className="text-sm font-bold text-indigo-400">{p.name}</div>
                           <div className="mt-2 text-3xl font-bold text-white">
@@ -329,7 +351,7 @@ export default function LandingPage() {
                             +${(p.credits / 100).toFixed(0)} {text.unit}
                           </div>
                           <ul className="mt-6 space-y-3">
-                            {p.perks.map((pk, j) => (
+                            {p.perks.map((pk: string, j: number) => (
                               <li key={j} className="flex items-start gap-2 text-sm text-slate-300">
                                 <span className="mt-0.5 text-indigo-400">✓</span>
                                 {pk}
@@ -367,7 +389,7 @@ export default function LandingPage() {
                         { name: "Standard", price: 399, desc: text.standard },
                         { name: "Set (3)", price: 899, desc: text.set3 },
                         { name: "List", price: 499, desc: text.listPrice },
-                      ].map((p, i) => (
+                      ].map((p: any, i: number) => (
                         <div key={i} className="rounded-2xl border border-slate-800 bg-slate-950/80 p-5 text-left hover:border-slate-700 transition">
                           <div className="flex justify-between items-center mb-2">
                             <h3 className="text-sm font-bold text-slate-100">{p.name}</h3>
@@ -397,8 +419,8 @@ export default function LandingPage() {
                       <div className="text-xs text-sky-400 font-bold tracking-widest uppercase mb-2">Announcements</div>
                       <h2 className="text-3xl font-bold text-white mb-4">{text.newsTitle}</h2>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                      {text.newsItems.map((news, i) => (
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                      {text.newsItems.map((news: any, i: number) => (
                         <div key={i} className="bg-slate-900/40 border border-slate-800 rounded-3xl p-8 hover:bg-slate-800/40 transition-all group">
                           <div className="flex items-center justify-between mb-6">
                             <span className="text-[10px] font-bold text-sky-400 bg-sky-400/10 px-2 py-1 rounded tracking-widest uppercase">
