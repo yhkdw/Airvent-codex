@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Wind } from "lucide-react";
 import Container from "../components/Container";
 import ProductSpecs from "../components/ProductSpecs";
 
@@ -229,12 +228,16 @@ export default function LandingPage() {
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 group transition-transform hover:scale-[1.02]"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-cyan-400 flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:shadow-emerald-500/40 transition-all duration-300">
-                    <Wind size={22} className="text-slate-950" />
+                  <div className="h-10 flex items-center">
+                    <img
+                      src="/airvent-logo-v3.png"
+                      alt="Airvent Logo"
+                      className="h-full w-auto object-contain drop-shadow-lg scale-110"
+                    />
                   </div>
-                  <div className="hidden sm:block">
+                  <div className="hidden sm:block border-l border-slate-800 pl-3 ml-1">
                     <div className="text-[10px] text-slate-500 font-black uppercase tracking-[0.2em] leading-none mb-1">Airvent DePIN</div>
-                    <div className="text-sm font-black text-white uppercase tracking-wider group-hover:text-emerald-400 transition-colors">Team Codex</div>
+                    <div className="text-sm font-black text-white uppercase tracking-wider group-hover:text-emerald-400 transition-colors whitespace-nowrap">Team Codex</div>
                   </div>
                 </a>
                 <nav className="hidden md:flex items-center gap-6">
