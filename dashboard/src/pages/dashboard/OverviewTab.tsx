@@ -37,9 +37,9 @@ export default function OverviewTab() {
         {
             id: 3,
             tag: "Network",
-            title: "에어벤트, Solana 생태계 강화 및 빌딩 지속",
-            desc: "AirVent 팀은 솔라나 DePIN 생태계의 성장을 위해 혁신적인 기능을 지속적으로 개발하고 빌딩하는 데 집중하고 있습니다.",
-            date: getFormattedDate(4),
+            title: "에어벤트, 슈퍼팀코리아 스타트업빌리지 참가 및 빌딩",
+            desc: "AirVent 팀이 슈퍼팀코리아 스타트업빌리지(Superteam Korea Startup Village)에 참여하여 솔라나 생태계의 혁신적인 DePIN 솔루션을 집중적으로 개발하고 있습니다.",
+            date: getFormattedDate(0),
             highlight: false
         }
     ]);
