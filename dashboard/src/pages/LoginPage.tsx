@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { loginWithEmail, loginWithSocial } from "../auth";
 
 export default function LoginPage() {
+  const { t } = useTranslation();
   const nav = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,10 +19,10 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-950 text-slate-100 p-4">
       <div className="w-full max-w-md rounded-2xl bg-slate-900/60 border border-slate-800 p-6 shadow-xl">
-        <div className="text-xs text-emerald-400 font-semibold tracking-wider mb-2">ACCESS CONTROL</div>
-        <h1 className="text-2xl font-bold mt-2 text-slate-100">Airvent DePIN</h1>
+        <div className="text-xs text-emerald-400 font-semibold tracking-wider mb-2">{t("login.access_control")}</div>
+        <h1 className="text-2xl font-bold mt-2 text-slate-100">{t("login.title")}</h1>
         <p className="text-sm text-slate-400 mt-2">
-          사용자 계정으로 로그인하세요.
+          {t("login.description")}
         </p>
 
         {/* Social Logins */}
@@ -58,7 +60,7 @@ export default function LoginPage() {
 
           <div className="relative flex items-center py-8">
             <div className="flex-grow border-t border-slate-800"></div>
-            <span className="flex-shrink mx-4 text-[10px] font-black text-slate-600 uppercase tracking-[0.2em]">Email Login</span>
+            <span className="flex-shrink mx-4 text-[10px] font-black text-slate-600 uppercase tracking-[0.2em]">{t("login.email_login")}</span>
             <div className="flex-grow border-t border-slate-800"></div>
           </div>
         </div>
@@ -72,14 +74,14 @@ export default function LoginPage() {
             const { error: loginErr } = await loginWithEmail(email, password);
             setLoading(false);
             if (loginErr) {
-              setError(loginErr.message || "계정 정보가 일치하지 않거나 서버 설정이 올바르지 않습니다.");
+              setError(loginErr.message || t("login.error_unauthorized"));
             } else {
               nav("/dashboard");
             }
           }}
         >
           <label className="block">
-            <div className="text-sm text-slate-300 mb-1.5 font-medium">Email</div>
+            <div className="text-sm text-slate-300 mb-1.5 font-medium">{t("login.email_label")}</div>
             <input
               className="w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-3 outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all font-mono text-sm"
               value={email}
@@ -91,7 +93,7 @@ export default function LoginPage() {
           </label>
 
           <label className="block">
-            <div className="text-sm text-slate-300 mb-1.5 font-medium">Password</div>
+            <div className="text-sm text-slate-300 mb-1.5 font-medium">{t("login.password_label")}</div>
             <input
               className="w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-3 outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all font-mono text-sm"
               value={password}
@@ -117,12 +119,12 @@ export default function LoginPage() {
             disabled={loading}
             className="w-full rounded-xl bg-emerald-500 text-slate-950 font-extrabold py-3.5 mt-2 hover:bg-emerald-400 transition shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/20 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:transform-none"
           >
-            {loading ? "Signing In..." : "Sign In"}
+            {loading ? t("login.signing_in") : t("login.sign_in")}
           </button>
 
           <div className="flex items-center justify-center mt-8">
             <Link to="/" className="text-xs font-bold text-slate-500 hover:text-slate-300 transition uppercase tracking-widest underline underline-offset-4">
-              ← Back to Home
+              ← {t("login.back_to_home")}
             </Link>
           </div>
         </form>

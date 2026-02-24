@@ -7,7 +7,7 @@ import { getMockAirQualitySeries } from "../../mock/airquality";
 function getFormattedDate(offsetDays = 0) {
     const d = new Date();
     d.setDate(d.getDate() - offsetDays);
-    return d.toLocaleDateString('ko-KR', {
+    return d.toLocaleDateString(undefined, {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit'

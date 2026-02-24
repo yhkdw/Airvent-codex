@@ -76,5 +76,17 @@
         "insight_initial": "Awaiting data packets...",
         "insight_analyzing": "Analyzing spatial temporal patterns...",
         "insight_verified": "Local telemetry verified. No anomalies detected within current sensor range."
+    },
+    "login": {
+        "title": "Airvent DePIN",
+        "access_control": "ACCESS CONTROL",
+        "description": "Sign in with your user account.",
+        "email_login": "Email Login",
+        "email_label": "Email",
+        "password_label": "Password",
+        "sign_in": "Sign In",
+        "signing_in": "Signing In...",
+        "back_to_home": "Back to Home",
+        "error_unauthorized": "Invalid credentials or incorrect server configuration."
     }
 }
