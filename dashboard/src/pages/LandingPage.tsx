@@ -222,12 +222,7 @@ export default function LandingPage() {
           <Container>
             <div className="py-4 flex items-center justify-between">
               <div className="flex items-center gap-8">
-                <a
-                  href="https://github.com/yhkdw/airvent-team.git"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 group transition-transform hover:scale-[1.02]"
-                >
+                <div className="flex items-center gap-3">
                   <div className="h-10 flex items-center">
                     <img
                       src="/airvent-logo-v3.png"
@@ -236,10 +231,9 @@ export default function LandingPage() {
                     />
                   </div>
                   <div className="hidden sm:block border-l border-slate-800 pl-3 ml-1">
-                    <div className="text-[10px] text-slate-500 font-black uppercase tracking-[0.2em] leading-none mb-1">Airvent DePIN</div>
-                    <div className="text-sm font-black text-white uppercase tracking-wider group-hover:text-emerald-400 transition-colors whitespace-nowrap">Team Codex</div>
+                    <div className="text-[10px] text-slate-500 font-black uppercase tracking-[0.2em] leading-none">Airvent DePIN</div>
                   </div>
-                </a>
+                </div>
                 <nav className="hidden md:flex items-center gap-6">
                   <a href="#how-it-works" className="text-sm font-medium text-slate-400 hover:text-emerald-400 transition-colors">{text.howItWorks}</a>
                   <a href="#network-news" className="text-sm font-medium text-slate-400 hover:text-emerald-400 transition-colors">{text.networkNews}</a>
