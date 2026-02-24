@@ -315,6 +315,44 @@ export default function LandingPage() {
                 </section>
 
                 <div className="mt-20 relative">
+                  {/* Global Pricing Section */}
+                  <div className="mt-20 text-center">
+                    <div className="text-xs text-indigo-400 font-bold tracking-widest uppercase mb-2">{text.rewardsTitle}</div>
+                    <h2 className="text-3xl font-bold text-slate-100 mb-4">{text.globalTitle}</h2>
+                    <p className="text-slate-400 max-w-2xl mx-auto mb-10">
+                      {text.globalDesc}
+                    </p>
+
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                      {[
+                        { name: "Early Bird", price: 349, desc: text.earlyBird },
+                        { name: "Standard", price: 399, desc: text.standard },
+                        { name: "Set (3)", price: 899, desc: text.set3 },
+                        { name: "List", price: 499, desc: text.listPrice },
+                      ].map((p: any, i: number) => (
+                        <div key={i} className="rounded-2xl border border-slate-800 bg-slate-950/80 p-5 text-left hover:border-slate-700 transition">
+                          <div className="flex justify-between items-center mb-2">
+                            <h3 className="text-sm font-bold text-slate-100">{p.name}</h3>
+                            <span className="text-sm font-extrabold text-white">${p.price}</span>
+                          </div>
+                          <div className="text-xs text-slate-500">{p.desc}</div>
+                          <div className="mt-3 text-[10px] text-slate-600 uppercase tracking-wide">PM1.0/2.5/10 • CO₂ • TVOC</div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="mt-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 p-4 text-center text-sm text-emerald-400 font-medium mb-8">
+                      {text.globalDisclaimer}
+                    </div>
+
+                    <Link
+                      to="/login"
+                      className="inline-block rounded-xl bg-emerald-500 text-slate-950 font-bold px-8 py-3 text-lg hover:bg-emerald-400 transition shadow-lg shadow-emerald-500/20 transform hover:-translate-y-0.5"
+                    >
+                      {text.btnNode}
+                    </Link>
+                  </div>
+
                   {/* Subscription-to-Own Section */}
                   <div className="rounded-3xl bg-slate-900/50 border border-slate-800 px-6 py-16 text-center shadow-2xl md:px-12 relative overflow-hidden mt-8">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-500" />
@@ -372,43 +410,6 @@ export default function LandingPage() {
                     </div>
                   </div>
 
-                  {/* Global Pricing Section */}
-                  <div className="mt-20 text-center">
-                    <div className="text-xs text-indigo-400 font-bold tracking-widest uppercase mb-2">{text.rewardsTitle}</div>
-                    <h2 className="text-3xl font-bold text-slate-100 mb-4">{text.globalTitle}</h2>
-                    <p className="text-slate-400 max-w-2xl mx-auto mb-10">
-                      {text.globalDesc}
-                    </p>
-
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-                      {[
-                        { name: "Early Bird", price: 349, desc: text.earlyBird },
-                        { name: "Standard", price: 399, desc: text.standard },
-                        { name: "Set (3)", price: 899, desc: text.set3 },
-                        { name: "List", price: 499, desc: text.listPrice },
-                      ].map((p: any, i: number) => (
-                        <div key={i} className="rounded-2xl border border-slate-800 bg-slate-950/80 p-5 text-left hover:border-slate-700 transition">
-                          <div className="flex justify-between items-center mb-2">
-                            <h3 className="text-sm font-bold text-slate-100">{p.name}</h3>
-                            <span className="text-sm font-extrabold text-white">${p.price}</span>
-                          </div>
-                          <div className="text-xs text-slate-500">{p.desc}</div>
-                          <div className="mt-3 text-[10px] text-slate-600 uppercase tracking-wide">PM1.0/2.5/10 • CO₂ • TVOC</div>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="mt-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 p-4 text-center text-sm text-emerald-400 font-medium mb-8">
-                      {text.globalDisclaimer}
-                    </div>
-
-                    <Link
-                      to="/login"
-                      className="inline-block rounded-xl bg-emerald-500 text-slate-950 font-bold px-8 py-3 text-lg hover:bg-emerald-400 transition shadow-lg shadow-emerald-500/20 transform hover:-translate-y-0.5"
-                    >
-                      {text.btnNode}
-                    </Link>
-                  </div>
 
                   {/* Network News Section */}
                   <section id="network-news" className="mt-32 pt-20 border-t border-slate-800 scroll-mt-24">
