@@ -90,7 +90,7 @@ export default function MiningCard() {
                         </div>
                         <div className="mt-1 flex justify-between">
                             <span>{t("rewards.ai_auditor")}:</span>
-                            <span className="text-cyan-400">Vent-AI v2.1</span>
+                            <span className="text-cyan-400">Airvent-AI v2.1</span>
                         </div>
                         <div className="mt-3 pt-2 border-t border-slate-800 flex justify-between opacity-60">
                             <span>{t("rewards.next_epoch")}:</span>

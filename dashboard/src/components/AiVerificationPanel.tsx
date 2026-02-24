@@ -30,7 +30,7 @@ export default function AiVerificationPanel({
   const steps: Step[] = useMemo(
     () => [
       { badge: "INFO", messageKey: "Real-time Node data ingestion...", insightKey: "rewards.insight_initial" },
-      { badge: "INFO", messageKey: "Vent-AI auditing data patterns...", insightKey: "rewards.insight_analyzing" },
+      { badge: "INFO", messageKey: "Airvent-AI auditing data patterns...", insightKey: "rewards.insight_analyzing" },
       { badge: "WARN", messageKey: "Scanning for heuristic anomalies...", insightKey: "rewards.insight_analyzing" },
       { badge: "INFO", messageKey: "Hashing integrity layer to Solana...", insightKey: "rewards.insight_verified" },
       { badge: "SOLANA", messageKey: "On-chain ZK-Proof recorded: Tamper-proof", insightKey: "rewards.insight_verified" },
