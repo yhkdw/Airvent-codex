@@ -29,17 +29,17 @@ export default function ProductSpecs({ lang }: ProductSpecsProps) {
                     "7인치 터치스크린 / 실시간 모니터링",
                     "PM1.0, PM2.5, PM10, CO2, TVOC, 온습도",
                     "Wi-Fi 6 메쉬 네트워크 지원",
-                    "매일 포인트 보상 (2배 리워드)"
+                    "매일 포인트 보상 (1.5배 리워드)"
                 ]
             },
             fly: {
                 tag: "PERSONAL & PORTABLE",
                 name: "AirVent Fly",
                 specs: [
-                    "가볍고 스마트한 입문형 디바이스",
                     "매월 합리적인 구독형 라이선스",
-                    "실시간 공기질 매칭 및 데이터 기여",
-                    "AIVT 포인트 보상 지원"
+                    "매일/매월 친환경 뉴스 및 공기질 데이터 제공(등급별 차등)",
+                    "노드 구입 혜택 제공",
+                    "매일 포인트 보상"
                 ]
             }
         },
@@ -65,17 +65,17 @@ export default function ProductSpecs({ lang }: ProductSpecsProps) {
                     "7 inch Touch Screen / Real-time Monitoring",
                     "PM1.0, PM2.5, PM10, CO2, TVOC, Temp/Humidity",
                     "Wi-Fi 6 Mesh Network Support",
-                    "Earn Points Daily (2x Rewards)"
+                    "Earn Points Daily (1.5x Rewards)"
                 ]
             },
             fly: {
                 tag: "PERSONAL & PORTABLE",
                 name: "AirVent Fly",
                 specs: [
-                    "Lightweight & Smart Entry Device",
-                    "Affordable Monthly Subscription",
-                    "Real-time Air Quality Matching",
-                    "Earn AIVT Points Rewards"
+                    "Affordable monthly subscription license",
+                    "Daily/Monthly eco-news & air quality data (Tiered)",
+                    "Exclusive node purchase benefits",
+                    "Earn points daily"
                 ]
             }
         }
