@@ -6,7 +6,7 @@ import ProductSpecs from "../components/ProductSpecs";
 const isLocal: boolean = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
 
 export default function LandingPage() {
-  const [lang, setLang] = useState<"ko" | "en">("ko");
+  const [lang, setLang] = useState<"ko" | "en">("en");
 
   const t: Record<string, any> = {
     ko: {
