@@ -3,17 +3,27 @@ import { ShieldCheck, Activity, FileSearch, ShieldAlert, CheckCircle2, Cpu, News
 import KpiCards from "../../components/KpiCards";
 import { getMockAirQualitySeries } from "../../mock/airquality";
 
+function getFormattedDate(offsetDays = 0) {
+    const d = new Date();
+    d.setDate(d.getDate() - offsetDays);
+    return d.toLocaleDateString('ko-KR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    }).replace(/\. /g, '.').replace(/\.$/, '');
+}
+
 export default function OverviewTab() {
     const series = useMemo(() => getMockAirQualitySeries(), []);
     const latest = series[series.length - 1];
 
-    const news = useMemo(() => [
+    const [news, setNews] = useState([
         {
             id: 1,
             tag: "Forecast",
             title: "서울 PM2.5, 이번 주 '나쁨' 지속 전망",
             desc: "기상청은 중국발 미세먼지와 대기 정체로 수도권 PM2.5가 75µg/m³ 이상 유지될 것으로 예보했습니다.",
-            date: "2026.02.24",
+            date: getFormattedDate(0),
             highlight: true
         },
         {
@@ -21,7 +31,7 @@ export default function OverviewTab() {
             tag: "Policy",
             title: "WHO, 실내 공기질 가이드라인 2026 업데이트 발표",
             desc: "세계보건기구가 실내 CO2 농도 기준을 1,000ppm에서 800ppm으로 강화하는 권고안을 발표했습니다.",
-            date: "2026.02.22",
+            date: getFormattedDate(0),
             highlight: false
         },
         {
@@ -29,10 +39,23 @@ export default function OverviewTab() {
             tag: "Network",
             title: "에어벤트, Solana 생태계 강화 및 빌딩 지속",
             desc: "AirVent 팀은 솔라나 DePIN 생태계의 성장을 위해 혁신적인 기능을 지속적으로 개발하고 빌딩하는 데 집중하고 있습니다.",
-            date: "2026.02.20",
+            date: getFormattedDate(4),
             highlight: false
         }
-    ], []);
+    ]);
+
+    // Daily News Update Simulation (Refreshes dates every 24 hours)
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setNews(prev => prev.map(item => {
+                if (item.tag === "Forecast" || item.tag === "Policy") {
+                    return { ...item, date: getFormattedDate(0) };
+                }
+                return item;
+            }));
+        }, 1000 * 60 * 60 * 24); // 24 Hours
+        return () => clearInterval(interval);
+    }, []);
 
     const [logs, setLogs] = useState([
         { id: 1, time: "14:20:01", node: "Node-0X82", status: "Verified", score: 0.99, type: "Data Integrity" },
