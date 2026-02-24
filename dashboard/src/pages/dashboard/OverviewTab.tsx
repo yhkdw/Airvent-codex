@@ -27,8 +27,8 @@ export default function OverviewTab() {
         {
             id: 3,
             tag: "Network",
-            title: "에어벤트, Solana Foundation Grant 수령 확정",
-            desc: "AirVent 프로젝트가 솔라나 재단의 DePIN 인프라 그랜트 프로그램에 선정되어 개발 가속화에 박차를 가합니다.",
+            title: "에어벤트, Solana 생태계 강화 및 빌딩 지속",
+            desc: "AirVent 팀은 솔라나 DePIN 생태계의 성장을 위해 혁신적인 기능을 지속적으로 개발하고 빌딩하는 데 집중하고 있습니다.",
             date: "2026.02.20",
             highlight: false
         }
