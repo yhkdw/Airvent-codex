@@ -1,14 +1,16 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import SubscriptionCard from "../../components/SubscriptionCard";
 import { Shield, ArrowUpRight, ArrowDownLeft, RefreshCw, Send, History } from "lucide-react";
 
 export default function WalletTab() {
+    const { t } = useTranslation();
     const transactions = useMemo(() => [
         {
             id: 1,
             type: "reward",
             amount: "+14.50",
-            target: "Mining Reward",
+            target: t("rewards.audit_logs"),
             time: "2h ago",
             tx: "5gYm...9qZ1",
             color: "text-emerald-400"
@@ -17,7 +19,7 @@ export default function WalletTab() {
             id: 2,
             type: "reward",
             amount: "+12.80",
-            target: "Mining Reward",
+            target: t("rewards.audit_logs"),
             time: "26h ago",
             tx: "4kPZ...xR2w",
             color: "text-emerald-400"
@@ -31,7 +33,7 @@ export default function WalletTab() {
             tx: "7nBx...2mL4",
             color: "text-rose-400"
         }
-    ], []);
+    ], [t]);
 
     return (
         <div className="max-w-5xl mx-auto space-y-6">
@@ -43,7 +45,7 @@ export default function WalletTab() {
                     <div className="space-y-4">
                         <div className="flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full w-fit">
                             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                            <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">SPL Token Account</span>
+                            <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">{t("wallet.spl_account")}</span>
                         </div>
                         <div>
                             <div className="text-4xl md:text-5xl font-extrabold tracking-tight text-white flex items-baseline gap-3">
@@ -56,11 +58,11 @@ export default function WalletTab() {
                     <div className="flex gap-3">
                         <button className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-white text-slate-950 px-6 py-3 rounded-2xl font-bold hover:bg-slate-200 transition-all shadow-lg hover:scale-105 active:scale-95">
                             <Send size={18} />
-                            Send
+                            {t("wallet.send")}
                         </button>
                         <button className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-slate-800 text-white px-6 py-3 rounded-2xl font-bold hover:bg-slate-700 transition-all hover:scale-105 active:scale-95">
                             <RefreshCw size={18} />
-                            Swap
+                            {t("wallet.swap")}
                         </button>
                     </div>
                 </div>
@@ -73,9 +75,9 @@ export default function WalletTab() {
                         <div className="p-2 bg-slate-800 rounded-xl text-slate-400">
                             <History size={20} />
                         </div>
-                        <h3 className="font-bold text-lg">Recent Transactions</h3>
+                        <h3 className="font-bold text-lg">{t("wallet.recent_tx")}</h3>
                     </div>
-                    <button className="text-xs font-bold text-emerald-400 hover:underline px-2 py-1">View All</button>
+                    <button className="text-xs font-bold text-emerald-400 hover:underline px-2 py-1">{t("wallet.view_all")}</button>
                 </div>
 
                 <div className="divide-y divide-slate-800/50">
@@ -96,7 +98,7 @@ export default function WalletTab() {
                             </div>
                             <div className="text-right">
                                 <div className={`text-lg font-bold text-slate-200 group-hover:text-emerald-400 transition-colors`}>{tx.amount} AIVT</div>
-                                <div className="text-[10px] text-slate-600 font-bold uppercase tracking-tighter mt-0.5 group-hover:text-emerald-500/50 transition-colors">Confirmed on Solana</div>
+                                <div className="text-[10px] text-slate-600 font-bold uppercase tracking-tighter mt-0.5 group-hover:text-emerald-500/50 transition-colors">{t("wallet.confirmed")}</div>
                             </div>
                         </div>
                     ))}
@@ -109,18 +111,18 @@ export default function WalletTab() {
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="text-lg font-semibold flex items-center gap-2">
                         <Shield size={20} className="text-emerald-400" />
-                        Wallet Security
+                        {t("wallet.security")}
                     </h3>
-                    <span className="text-[10px] bg-emerald-500/10 text-emerald-500 px-2 py-1 rounded-full font-bold">PROTECTED</span>
+                    <span className="text-[10px] bg-emerald-500/10 text-emerald-500 px-2 py-1 rounded-full font-bold">{t("wallet.protected")}</span>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="p-4 bg-slate-950/50 rounded-xl border border-slate-800">
-                        <div className="text-xs text-slate-500 uppercase mb-1">Backup Phrase</div>
-                        <div className="text-sm font-medium">Secured by Phantom</div>
+                        <div className="text-xs text-slate-500 uppercase mb-1">{t("wallet.backup")}</div>
+                        <div className="text-sm font-medium">{t("wallet.secured_by")}</div>
                     </div>
                     <div className="p-4 bg-slate-950/50 rounded-xl border border-slate-800">
-                        <div className="text-xs text-slate-500 uppercase mb-1">Network</div>
-                        <div className="text-sm font-medium">Solana Devnet</div>
+                        <div className="text-xs text-slate-500 uppercase mb-1">{t("wallet.network")}</div>
+                        <div className="text-sm font-medium">{t("wallet.devnet")}</div>
                     </div>
                 </div>
             </div>

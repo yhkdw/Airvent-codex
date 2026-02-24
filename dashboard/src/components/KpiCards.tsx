@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { AirPoint } from "../types/air";
 import { THRESHOLDS } from "../config/thresholds";
 import { fmt } from "../utils/format";
@@ -15,6 +16,7 @@ function cardToneCls(t: "ok" | "warn" | "bad"): string {
 }
 
 export default function KpiCards({ latest }: { latest: AirPoint }) {
+  const { t } = useTranslation();
   const items = [
     { k: "PM2.5", v: latest.pm25, u: "µg/m³", t: tone(latest.pm25, THRESHOLDS.pm25) },
     { k: "PM10", v: latest.pm10, u: "µg/m³", t: tone(latest.pm10, THRESHOLDS.pm10) },
@@ -36,7 +38,7 @@ export default function KpiCards({ latest }: { latest: AirPoint }) {
             {"extra" in it ? it.extra : `${it.v} ${it.u}`}
           </div>
           <div className="mt-1 text-xs text-slate-500">
-            {"extra" in it ? "Indoor comfort" : "Live stream"}
+            {"extra" in it ? t("overview.indoor_comfort") : t("overview.live_stream")}
           </div>
         </div>
       ))}

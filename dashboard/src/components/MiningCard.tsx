@@ -1,7 +1,9 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import Badge from "./Badge";
 
 export default function MiningCard() {
+    const { t } = useTranslation();
     const [points, setPoints] = useState(1250);
     const [progress, setProgress] = useState(0);
     const [status, setStatus] = useState<"MINING" | "VALIDATING" | "SOLANA_CONFIRMED">("MINING");
@@ -47,12 +49,6 @@ export default function MiningCard() {
     }, [progress, status]);
 
 
-    const getStatusColor = () => {
-        if (status === "MINING") return "bg-sky-500";
-        if (status === "VALIDATING") return "bg-amber-500";
-        return "bg-purple-500"; // Solana Purple
-    };
-
     return (
         <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 relative overflow-hidden h-full flex flex-col justify-between">
             {/* Background decoration */}
@@ -65,11 +61,11 @@ export default function MiningCard() {
             <div className="relative z-10 flex-1 flex flex-col">
                 <div className="flex items-center justify-between mb-4">
                     <div>
-                        <div className="text-xs text-slate-400 font-bold tracking-wider underline decoration-emerald-500/30">AI DePIN REWARD MINING</div>
-                        <div className="text-lg font-semibold text-slate-100">AirVent Token (AIVT)</div>
+                        <div className="text-xs text-slate-400 font-bold tracking-wider underline decoration-emerald-500/30">{t("rewards.mining_title")}</div>
+                        <div className="text-lg font-semibold text-slate-100">{t("rewards.token_name")}</div>
                     </div>
                     <Badge tone={status === "MINING" ? "info" : status === "VALIDATING" ? "warn" : "solana"}>
-                        {status === "SOLANA_CONFIRMED" ? "ON-CHAIN VERIFIED" : status}
+                        {status === "SOLANA_CONFIRMED" ? t("rewards.verified") : status}
                     </Badge>
                 </div>
 
@@ -80,24 +76,24 @@ export default function MiningCard() {
 
                 <div className="mt-auto space-y-3">
                     <div className="flex items-center gap-2 mb-1">
-                        <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Node Mining Stats</div>
+                        <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{t("rewards.mining_stats")}</div>
                     </div>
                     {/* Log */}
                     <div className="p-3 bg-slate-950/60 rounded-xl border border-slate-800 text-xs font-mono text-slate-400">
                         <div className="flex justify-between">
-                            <span>ZKP Proof Hash:</span>
+                            <span>{t("rewards.proof_hash")}:</span>
                             <span className="text-emerald-500">{blockHash}</span>
                         </div>
                         <div className="mt-1 flex justify-between">
-                            <span>Solana Tx:</span>
-                            <span className="text-purple-400 font-mono tracking-tight">{solanaTx || "Broadcasting..."}</span>
+                            <span>{t("rewards.solana_tx")}:</span>
+                            <span className="text-purple-400 font-mono tracking-tight">{solanaTx || t("rewards.broadcasting")}</span>
                         </div>
                         <div className="mt-1 flex justify-between">
-                            <span>AI Auditor:</span>
+                            <span>{t("rewards.ai_auditor")}:</span>
                             <span className="text-cyan-400">Vent-AI v2.1</span>
                         </div>
                         <div className="mt-3 pt-2 border-t border-slate-800 flex justify-between opacity-60">
-                            <span>Next Epoch:</span>
+                            <span>{t("rewards.next_epoch")}:</span>
                             <span>~14m 20s</span>
                         </div>
                     </div>

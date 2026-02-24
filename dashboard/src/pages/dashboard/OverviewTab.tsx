@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { ShieldCheck, Activity, FileSearch, ShieldAlert, CheckCircle2, Cpu, Newspaper, ExternalLink } from "lucide-react";
 import KpiCards from "../../components/KpiCards";
 import { getMockAirQualitySeries } from "../../mock/airquality";
@@ -14,6 +15,7 @@ function getFormattedDate(offsetDays = 0) {
 }
 
 export default function OverviewTab() {
+    const { t } = useTranslation();
     const series = useMemo(() => getMockAirQualitySeries(), []);
     const latest = series[series.length - 1];
 
@@ -21,24 +23,24 @@ export default function OverviewTab() {
         {
             id: 1,
             tag: "Forecast",
-            title: "서울 PM2.5, 이번 주 '나쁨' 지속 전망",
-            desc: "기상청은 중국발 미세먼지와 대기 정체로 수도권 PM2.5가 75µg/m³ 이상 유지될 것으로 예보했습니다.",
+            titleKey: "overview.news.forecast_title",
+            descKey: "overview.news.forecast_desc",
             date: getFormattedDate(0),
             highlight: true
         },
         {
             id: 2,
             tag: "Policy",
-            title: "WHO, 실내 공기질 가이드라인 2026 업데이트 발표",
-            desc: "세계보건기구가 실내 CO2 농도 기준을 1,000ppm에서 800ppm으로 강화하는 권고안을 발표했습니다.",
+            titleKey: "overview.news.policy_title",
+            descKey: "overview.news.policy_desc",
             date: getFormattedDate(0),
             highlight: false
         },
         {
             id: 3,
             tag: "Network",
-            title: "에어벤트, 슈퍼팀코리아 스타트업빌리지 참가 및 빌딩",
-            desc: "AirVent 팀이 슈퍼팀코리아 스타트업빌리지(Superteam Korea Startup Village)에 참여하여 솔라나 생태계의 혁신적인 DePIN 솔루션을 집중적으로 개발하고 있습니다.",
+            titleKey: "overview.news.network_title",
+            descKey: "overview.news.network_desc",
             date: getFormattedDate(0),
             highlight: false
         }
@@ -85,7 +87,7 @@ export default function OverviewTab() {
     return (
         <div className="space-y-6">
             <div>
-                <h3 className="text-sm font-semibold text-slate-400 mb-4 uppercase tracking-widest">Global Network Status</h3>
+                <h3 className="text-sm font-semibold text-slate-400 mb-4 uppercase tracking-widest">{t("overview.global_status")}</h3>
                 <KpiCards latest={latest} />
             </div>
 
@@ -99,19 +101,19 @@ export default function OverviewTab() {
                         <div className="relative z-10">
                             <div className="flex items-center gap-2 text-emerald-400 mb-2">
                                 <Cpu size={18} />
-                                <span className="text-xs font-bold uppercase tracking-wider">DePIN AI Audit Engine</span>
+                                <span className="text-xs font-bold uppercase tracking-wider">{t("overview.audit_engine")}</span>
                             </div>
-                            <h1 className="text-3xl font-bold mb-2">Real-time Data Integrity</h1>
+                            <h1 className="text-3xl font-bold mb-2">{t("overview.integrity_title")}</h1>
                             <p className="text-slate-400 max-w-lg mb-6">
-                                All sensor data is automatically audited through our decentralized AI layer using Zero-Knowledge proofs to ensure 100% authenticity without compromising privacy.
+                                {t("overview.integrity_desc")}
                             </p>
                             <div className="flex gap-4">
                                 <div className="bg-slate-950/50 border border-slate-800 rounded-xl px-4 py-3">
-                                    <div className="text-xs text-slate-500 uppercase">Network Score</div>
+                                    <div className="text-xs text-slate-500 uppercase">{t("overview.network_score")}</div>
                                     <div className="text-2xl font-bold text-emerald-400">99.8%</div>
                                 </div>
                                 <div className="bg-slate-950/50 border border-slate-800 rounded-xl px-4 py-3">
-                                    <div className="text-xs text-slate-500 uppercase">Total Audits</div>
+                                    <div className="text-xs text-slate-500 uppercase">{t("overview.total_audits")}</div>
                                     <div className="text-2xl font-bold text-cyan-400">1.2M+</div>
                                 </div>
                             </div>
@@ -121,7 +123,7 @@ export default function OverviewTab() {
                     <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
                         <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
                             <Activity size={18} className="text-emerald-400" />
-                            Live Audit Feed
+                            {t("overview.live_audit")}
                         </h2>
                         <div className="space-y-3">
                             {logs.map((log) => (
@@ -152,7 +154,7 @@ export default function OverviewTab() {
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-widest flex items-center gap-2">
                         <Newspaper size={16} />
-                        Network News & Announcements
+                        {t("overview.news_title")}
                     </h3>
                 </div>
 
@@ -166,13 +168,13 @@ export default function OverviewTab() {
                                 <span className="text-[10px] text-slate-600">{item.date}</span>
                             </div>
                             <h4 className="text-sm font-bold text-slate-200 mb-2 group-hover:text-emerald-400 transition-colors line-clamp-1">
-                                {item.title}
+                                {t(item.titleKey)}
                             </h4>
                             <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed mb-4">
-                                {item.desc}
+                                {t(item.descKey)}
                             </p>
                             <div className="flex items-center gap-1 text-[10px] text-slate-500 font-bold opacity-0 group-hover:opacity-100 transition-opacity">
-                                READ MORE <ExternalLink size={10} />
+                                {t("overview.read_more")} <ExternalLink size={10} />
                             </div>
                         </div>
                     ))}

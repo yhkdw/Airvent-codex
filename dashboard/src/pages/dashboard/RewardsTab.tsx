@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import MiningCard from "../../components/MiningCard";
 import AiVerificationPanel, { AiEvent } from "../../components/AiVerificationPanel";
 import { TrendingUp, Award, Clock, Terminal } from "lucide-react";
@@ -8,6 +9,7 @@ interface RewardsTabProps {
 }
 
 export default function RewardsTab({ onReward }: RewardsTabProps) {
+    const { t } = useTranslation();
     const [events, setEvents] = useState<AiEvent[]>([
         { ts: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }), badge: "INFO", message: "AI Verification Pipeline Ready" },
     ]);
@@ -33,10 +35,10 @@ export default function RewardsTab({ onReward }: RewardsTabProps) {
                         <div className="p-2 bg-emerald-500/10 rounded-lg text-emerald-500">
                             <TrendingUp size={20} />
                         </div>
-                        <div className="text-sm font-semibold text-slate-300">Mining Efficiency</div>
+                        <div className="text-sm font-semibold text-slate-300">{t("rewards.efficiency")}</div>
                     </div>
                     <div className="text-2xl font-bold">94.2%</div>
-                    <div className="text-xs text-slate-500 mt-1">+2.1% from last epoch</div>
+                    <div className="text-xs text-slate-500 mt-1">+2.1% {t("rewards.last_epoch")}</div>
                 </div>
 
                 <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5">
@@ -44,10 +46,10 @@ export default function RewardsTab({ onReward }: RewardsTabProps) {
                         <div className="p-2 bg-cyan-500/10 rounded-lg text-cyan-500">
                             <Award size={20} />
                         </div>
-                        <div className="text-sm font-semibold text-slate-300">Epoch Rank</div>
+                        <div className="text-sm font-semibold text-slate-300">{t("rewards.epoch_rank")}</div>
                     </div>
                     <div className="text-2xl font-bold">#1,402</div>
-                    <div className="text-xs text-slate-500 mt-1">Top 5% of all nodes</div>
+                    <div className="text-xs text-slate-500 mt-1">{t("rewards.top_nodes")}</div>
                 </div>
 
                 <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5">
@@ -55,10 +57,10 @@ export default function RewardsTab({ onReward }: RewardsTabProps) {
                         <div className="p-2 bg-purple-500/10 rounded-lg text-purple-500">
                             <Clock size={20} />
                         </div>
-                        <div className="text-sm font-semibold text-slate-300">Uptime (24h)</div>
+                        <div className="text-sm font-semibold text-slate-300">{t("rewards.uptime")}</div>
                     </div>
                     <div className="text-2xl font-bold">99.98%</div>
-                    <div className="text-xs text-slate-500 mt-1">Status: Operational</div>
+                    <div className="text-xs text-slate-500 mt-1">{t("rewards.status_ok")}</div>
                 </div>
             </div>
 
@@ -67,9 +69,9 @@ export default function RewardsTab({ onReward }: RewardsTabProps) {
                 <div className="p-4 border-b border-slate-800 bg-slate-800/20 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <Terminal size={18} className="text-emerald-400" />
-                        <h3 className="text-sm font-bold uppercase tracking-widest">Network Audit Logs</h3>
+                        <h3 className="text-sm font-bold uppercase tracking-widest">{t("rewards.audit_logs")}</h3>
                     </div>
-                    <div className="text-[10px] text-slate-500 font-mono text-xs opacity-50">Real-time Stream</div>
+                    <div className="text-[10px] text-slate-500 font-mono text-xs opacity-50">{t("rewards.realtime_stream")}</div>
                 </div>
                 <div className="p-4 space-y-2 max-h-[250px] overflow-y-auto font-mono">
                     {events.map((e, i) => (
