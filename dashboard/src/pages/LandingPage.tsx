@@ -222,16 +222,16 @@ export default function LandingPage() {
           <Container>
             <div className="py-4 flex items-center justify-between">
               <div className="flex items-center gap-8">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 flex items-center">
+                <div className="flex items-center gap-4">
+                  <div className="h-14 flex items-center">
                     <img
                       src="/airvent-logo-v3.png"
                       alt="Airvent Logo"
                       className="h-full w-auto object-contain drop-shadow-lg scale-110"
                     />
                   </div>
-                  <div className="hidden sm:block border-l border-slate-800 pl-3 ml-1">
-                    <div className="text-[10px] text-slate-500 font-black uppercase tracking-[0.2em] leading-none">Airvent DePIN</div>
+                  <div className="hidden sm:block border-l-2 border-slate-800 pl-4 ml-1">
+                    <div className="text-sm text-slate-400 font-black uppercase tracking-[0.2em] leading-none">Airvent DePIN</div>
                   </div>
                 </div>
                 <nav className="hidden md:flex items-center gap-6">
