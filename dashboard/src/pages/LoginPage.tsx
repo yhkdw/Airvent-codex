@@ -23,8 +23,48 @@ export default function LoginPage() {
           사용자 계정으로 로그인하세요.
         </p>
 
+        {/* Social Logins */}
+        <div className="mt-8">
+          <div className="flex flex-col gap-3">
+            <button
+              type="button"
+              onClick={() => handleSocialLogin('google')}
+              className="w-full flex items-center justify-center gap-3 rounded-xl bg-white/5 border border-slate-800 py-3.5 text-sm font-bold hover:bg-white/10 transition"
+            >
+              Google
+            </button>
+            <button
+              type="button"
+              onClick={() => handleSocialLogin('twitter')}
+              className="w-full flex items-center justify-center gap-3 rounded-xl bg-white/5 border border-slate-800 py-3.5 text-sm font-bold hover:bg-white/10 transition"
+            >
+              X (Twitter)
+            </button>
+            <button
+              type="button"
+              onClick={() => handleSocialLogin('naver')}
+              className="w-full flex items-center justify-center gap-3 rounded-xl bg-[#03C75A]/10 border border-[#03C75A]/30 py-3.5 text-sm font-bold hover:bg-[#03C75A]/20 transition text-[#03C75A]"
+            >
+              Naver
+            </button>
+            <button
+              type="button"
+              onClick={() => handleSocialLogin('kakao')}
+              className="w-full flex items-center justify-center gap-3 rounded-xl bg-[#FEE500]/10 border border-[#FEE500]/30 py-3.5 text-sm font-bold hover:bg-[#FEE500]/20 transition text-[#FEE500]"
+            >
+              Kakao
+            </button>
+          </div>
+
+          <div className="relative flex items-center py-8">
+            <div className="flex-grow border-t border-slate-800"></div>
+            <span className="flex-shrink mx-4 text-[10px] font-black text-slate-600 uppercase tracking-[0.2em]">Email Login</span>
+            <div className="flex-grow border-t border-slate-800"></div>
+          </div>
+        </div>
+
         <form
-          className="mt-6 space-y-4"
+          className="space-y-4"
           onSubmit={async (e) => {
             e.preventDefault();
             setError("");
@@ -79,46 +119,6 @@ export default function LoginPage() {
           >
             {loading ? "Signing In..." : "Sign In"}
           </button>
-
-          {/* Social Logins */}
-          <div className="mt-8">
-            <div className="relative flex items-center py-4">
-              <div className="flex-grow border-t border-slate-800"></div>
-              <span className="flex-shrink mx-4 text-xs font-bold text-slate-600 uppercase tracking-widest">Social Login</span>
-              <div className="flex-grow border-t border-slate-800"></div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3 mt-4">
-              <button
-                type="button"
-                onClick={() => handleSocialLogin('google')}
-                className="flex items-center justify-center gap-2 rounded-xl bg-white/5 border border-slate-800 py-3 text-sm font-semibold hover:bg-white/10 transition"
-              >
-                Google
-              </button>
-              <button
-                type="button"
-                onClick={() => handleSocialLogin('twitter')}
-                className="flex items-center justify-center gap-2 rounded-xl bg-white/5 border border-slate-800 py-3 text-sm font-semibold hover:bg-white/10 transition"
-              >
-                X (Twitter)
-              </button>
-              <button
-                type="button"
-                onClick={() => handleSocialLogin('naver')}
-                className="flex items-center justify-center gap-2 rounded-xl bg-[#03C75A]/20 border border-[#03C75A]/30 py-3 text-sm font-semibold hover:bg-[#03C75A]/30 transition text-[#03C75A]"
-              >
-                Naver
-              </button>
-              <button
-                type="button"
-                onClick={() => handleSocialLogin('kakao')}
-                className="flex items-center justify-center gap-2 rounded-xl bg-[#FEE500]/20 border border-[#FEE500]/30 py-3 text-sm font-semibold hover:bg-[#FEE500]/30 transition text-[#3C1E1E]"
-              >
-                Kakao
-              </button>
-            </div>
-          </div>
 
           <div className="flex items-center justify-center mt-8">
             <Link to="/" className="text-xs font-bold text-slate-500 hover:text-slate-300 transition uppercase tracking-widest underline underline-offset-4">
