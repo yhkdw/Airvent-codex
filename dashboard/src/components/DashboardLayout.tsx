@@ -5,7 +5,7 @@ import {
     LayoutDashboard,
     Wind,
     Coins,
-    CreditCard,
+    Wallet,
     LogOut,
     Menu,
     X
@@ -25,7 +25,7 @@ const navItems = [
     { name: "Home", path: "/dashboard", icon: LayoutDashboard },
     { name: "Air Quality", path: "/dashboard/air-quality", icon: Wind },
     { name: "Rewards", path: "/dashboard/rewards", icon: Coins },
-    { name: "Subscription", path: "/dashboard/subscription", icon: CreditCard },
+    { name: "Wallet", path: "/dashboard/wallet", icon: Wallet },
 ];
 
 export default function DashboardLayout({
