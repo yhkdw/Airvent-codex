@@ -279,11 +279,11 @@ export default function LandingPage() {
             <div className="py-10">
               <div className="max-w-3xl mx-auto text-center">
                 <div className="text-xs text-emerald-400 font-semibold tracking-wider mb-2">{text.heroTag}</div>
-                <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
+                <h1 className="text-3xl md:text-4xl font-bold leading-tight mb-6">
                   {text.heroTitlePrefix} <span className="text-emerald-400">{text.heroTitleHighlight}</span> {text.heroTitleMid}{" "}
                   <span className="text-sky-400">{text.heroTitleSuffix}</span> {text.heroTitleEnd}
                 </h1>
-                <p className="text-slate-300 text-lg mb-10 max-w-2xl mx-auto whitespace-pre-line">
+                <p className="text-slate-300 text-base mb-10 max-w-2xl mx-auto whitespace-pre-line">
                   {text.heroDesc.split(/\*\*(.*?)\*\*/g).map((part: string, i: number) =>
                     i % 2 === 1 ? <strong key={i} className="text-emerald-400 font-bold">{part}</strong> : part
                   )}
@@ -295,7 +295,7 @@ export default function LandingPage() {
                 <section id="how-it-works" className="mt-32 scroll-mt-24">
                   <div className="text-center mb-16">
                     <div className="text-xs text-emerald-400 font-bold tracking-widest uppercase mb-2">Technical Process</div>
-                    <h2 className="text-3xl font-bold text-white mb-4">{text.howItWorksTitle}</h2>
+                    <h2 className="text-2xl font-bold text-white mb-4">{text.howItWorksTitle}</h2>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {text.steps.map((step: any, i: number) => (
@@ -303,7 +303,7 @@ export default function LandingPage() {
                         <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 h-full hover:border-emerald-500/30 transition-all hover:bg-slate-800/40">
                           <div className="text-4xl mb-4 grayscale group-hover:grayscale-0 transition-all">{step.icon}</div>
                           <div className="text-xs text-slate-500 font-bold mb-1">STEP 0{i + 1}</div>
-                          <h3 className="text-lg font-bold text-white mb-2">{step.title}</h3>
+                          <h3 className="text-base font-bold text-white mb-2">{step.title}</h3>
                           <p className="text-sm text-slate-400 leading-relaxed">{step.desc}</p>
                         </div>
                         {i < 3 && (
@@ -318,7 +318,7 @@ export default function LandingPage() {
                   {/* Global Pricing Section */}
                   <div className="mt-20 text-center">
                     <div className="text-xs text-indigo-400 font-bold tracking-widest uppercase mb-2">{text.rewardsTitle}</div>
-                    <h2 className="text-3xl font-bold text-slate-100 mb-4">{text.globalTitle}</h2>
+                    <h2 className="text-2xl font-bold text-slate-100 mb-4">{text.globalTitle}</h2>
                     <p className="text-slate-400 max-w-2xl mx-auto mb-10">
                       {text.globalDesc}
                     </p>
@@ -347,7 +347,7 @@ export default function LandingPage() {
 
                     <Link
                       to="/login"
-                      className="inline-flex items-center justify-center min-w-[240px] rounded-xl bg-emerald-500 text-slate-950 font-bold px-8 py-4 text-lg hover:bg-emerald-400 transition shadow-lg shadow-emerald-500/20 transform hover:-translate-y-0.5"
+                      className="inline-flex items-center justify-center min-w-[240px] rounded-xl bg-emerald-500 text-slate-950 font-bold px-8 py-3.5 text-base hover:bg-emerald-400 transition shadow-lg shadow-emerald-500/20 transform hover:-translate-y-0.5"
                     >
                       {text.btnNode}
                     </Link>
@@ -356,8 +356,8 @@ export default function LandingPage() {
                   {/* Subscription-to-Own Section */}
                   <div className="rounded-3xl bg-slate-900/50 border border-slate-800 px-6 py-16 text-center shadow-2xl md:px-12 relative overflow-hidden mt-8">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-500" />
-                    <h2 className="text-3xl font-black text-white md:text-4xl">{text.subTitle}</h2>
-                    <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-300">
+                    <h2 className="text-2xl font-black text-white md:text-3xl">{text.subTitle}</h2>
+                    <p className="mx-auto mt-4 max-w-2xl text-base text-slate-300">
                       {text.subDesc}
                     </p>
 
@@ -379,7 +379,7 @@ export default function LandingPage() {
                       ].map((p: any, i: number) => (
                         <div key={i} className="rounded-2xl bg-slate-950/50 p-6 border border-slate-800 backdrop-blur-sm hover:border-indigo-500/30 transition">
                           <div className="text-sm font-bold text-indigo-400">{p.name}</div>
-                          <div className="mt-2 text-3xl font-bold text-white">
+                          <div className="mt-2 text-2xl font-bold text-white">
                             ${(p.price / 100).toFixed(0)}<span className="text-sm font-normal text-slate-500">/mo</span>
                           </div>
                           <div className="mt-1 text-sm text-emerald-400 font-medium">
@@ -395,7 +395,7 @@ export default function LandingPage() {
                       </div>
                       <Link
                         to="/login"
-                        className="inline-flex items-center justify-center min-w-[240px] rounded-xl bg-indigo-500 text-white font-bold px-8 py-4 text-lg hover:bg-indigo-400 transition shadow-lg shadow-indigo-500/20 transform hover:-translate-y-0.5"
+                        className="inline-flex items-center justify-center min-w-[240px] rounded-xl bg-indigo-500 text-white font-bold px-8 py-3.5 text-base hover:bg-indigo-400 transition shadow-lg shadow-indigo-500/20 transform hover:-translate-y-0.5"
                       >
                         {text.btnSubscription}
                       </Link>
