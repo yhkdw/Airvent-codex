@@ -31,6 +31,16 @@ export default function ProductSpecs({ lang }: ProductSpecsProps) {
                     "Wi-Fi 6 메쉬 네트워크 지원",
                     "매일 포인트 보상 (2배 리워드)"
                 ]
+            },
+            fly: {
+                tag: "PERSONAL & PORTABLE",
+                name: "AirVent Fly",
+                specs: [
+                    "가볍고 스마트한 입문형 디바이스",
+                    "매월 합리적인 구독형 라이선스",
+                    "실시간 공기질 매칭 및 데이터 기여",
+                    "AIVT 포인트 보상 지원"
+                ]
             }
         },
         en: {
@@ -57,6 +67,16 @@ export default function ProductSpecs({ lang }: ProductSpecsProps) {
                     "Wi-Fi 6 Mesh Network Support",
                     "Earn Points Daily (2x Rewards)"
                 ]
+            },
+            fly: {
+                tag: "PERSONAL & PORTABLE",
+                name: "AirVent Fly",
+                specs: [
+                    "Lightweight & Smart Entry Device",
+                    "Affordable Monthly Subscription",
+                    "Real-time Air Quality Matching",
+                    "Earn AIVT Points Rewards"
+                ]
             }
         }
     };
@@ -76,7 +96,7 @@ export default function ProductSpecs({ lang }: ProductSpecsProps) {
                     </p>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                     {/* AirVent Pro */}
                     <div className="rounded-2xl border border-slate-800 bg-slate-950/50 p-8 backdrop-blur hover:border-emerald-500/50 transition duration-300">
                         <div className="text-xs font-bold text-emerald-500 mb-2">{text.pro.tag}</div>
@@ -109,10 +129,32 @@ export default function ProductSpecs({ lang }: ProductSpecsProps) {
                         </div>
 
                         <ul className="space-y-3">
-                            {text.titan.specs.map((spec, i) => (
+                            {text.titan.specs.map((spec: any, i: number) => (
                                 <li key={i} className="flex items-center text-slate-300">
                                     <svg className="w-5 h-5 text-purple-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                                     <span dangerouslySetInnerHTML={{ __html: spec.replace(/\(.*\)/, '<b>$&</b>') }} />
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* AirVent Fly (Subscription) */}
+                    <div className="rounded-2xl border border-slate-800 bg-slate-950/50 p-8 backdrop-blur relative overflow-hidden group hover:border-sky-500/50 transition duration-300">
+                        <div className="absolute top-0 right-0 bg-sky-600 text-white text-xs font-bold px-3 py-1 rounded-bl-xl">
+                            SUBSCRIPTION
+                        </div>
+                        <div className="text-xs font-bold text-sky-400 mb-2">{text.fly.tag}</div>
+                        <h3 className="text-2xl font-bold text-slate-100 mb-4">{text.fly.name}</h3>
+                        <div className="h-80 bg-white/5 rounded-xl mb-6 flex items-center justify-center border border-slate-800 overflow-hidden p-2 relative group-hover:border-sky-500/30 transition transition-all duration-500">
+                            <div className="absolute inset-0 bg-gradient-to-br from-sky-500/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-500" />
+                            <img src="/airvent-logo.png" alt="AirVent Fly" className="h-[90%] w-[90%] object-contain relative z-10 drop-shadow-[0_20px_50px_rgba(14,165,233,0.3)] transform group-hover:scale-105 transition duration-700" />
+                        </div>
+
+                        <ul className="space-y-3">
+                            {text.fly.specs.map((spec: any, i: number) => (
+                                <li key={i} className="flex items-center text-slate-300">
+                                    <svg className="w-5 h-5 text-sky-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                                    {spec}
                                 </li>
                             ))}
                         </ul>
