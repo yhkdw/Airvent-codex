@@ -18,11 +18,16 @@ export async function loginWithEmail(email: string, password: string) {
 
 export async function loginWithSocial(provider: 'google' | 'twitter' | 'naver' | 'kakao') {
   console.log(`[Auth] Initiating social login...`);
-  console.log(`[Auth] Provider: ${provider}`);
+
+  // For the new 'X / Twitter (OAuth 2.0)' provider in Supabase, 
+  // the provider string is often 'x' instead of 'twitter'.
+  const providerKey = provider === 'twitter' ? 'x' : provider;
+
+  console.log(`[Auth] Provider string used: ${providerKey}`);
   console.log(`[Auth] Redirect: ${window.location.origin}/dashboard`);
 
   return await supabase.auth.signInWithOAuth({
-    provider: provider as any,
+    provider: providerKey as any,
     options: {
       redirectTo: window.location.origin + '/dashboard',
       skipBrowserRedirect: false
