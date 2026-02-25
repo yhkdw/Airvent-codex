@@ -17,6 +17,7 @@ export async function loginWithEmail(email: string, password: string) {
 }
 
 export async function loginWithSocial(provider: 'google' | 'twitter' | 'naver' | 'kakao') {
+  console.log(`Attempting login with provider: ${provider}`);
   return await supabase.auth.signInWithOAuth({
     provider: provider as any,
     options: {
