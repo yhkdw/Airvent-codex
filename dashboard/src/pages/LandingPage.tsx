@@ -57,9 +57,9 @@ export default function LandingPage() {
       newsItems: [
         {
           tag: "Partnership",
-          title: "슈퍼팀코리아 스타트업 빌리지 파트너십",
-          desc: "솔라나 생태계의 DePIN 솔루션 확장을 위해 슈퍼팀코리아와 전략적 협업을 시작했습니다.",
-          date: "2026.02.24"
+          title: "스마트라인(SmartLine) 전략적 파트너십 체결",
+          desc: "IoT 전문업체인 스마트라인과 협업하여 고밀도 대기질 측정이 가능한 프리미엄 공기질노드를 안정적으로 공급받습니다.",
+          date: "2026.02.25"
         },
         {
           tag: "Roadmap",
@@ -153,9 +153,9 @@ export default function LandingPage() {
       newsItems: [
         {
           tag: "Partnership",
-          title: "Superteam Korea Startup Village Partnership",
-          desc: "Strategic collaboration with Superteam Korea to expand DePIN solutions in the Solana ecosystem.",
-          date: "2026.02.24"
+          title: "Strategic Partnership with SmartLine",
+          desc: "Collaborating with IoT specialist SmartLine to secure a steady supply of premium air quality nodes for high-density environmental monitoring.",
+          date: "2026.02.25"
         },
         {
           tag: "Roadmap",
