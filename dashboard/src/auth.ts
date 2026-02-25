@@ -17,10 +17,10 @@ export async function loginWithEmail(email: string, password: string) {
 }
 
 export async function loginWithSocial(provider: 'google' | 'twitter' | 'naver' | 'kakao') {
-  console.log(`Attempting social login with provider: ${provider}`);
+  console.log(`[Auth] Initiating social login...`);
+  console.log(`[Auth] Provider: ${provider}`);
+  console.log(`[Auth] Redirect: ${window.location.origin}/dashboard`);
 
-  // Some newer Supabase projects might respond to 'x' instead of 'twitter' 
-  // though 'twitter' is the official string.
   return await supabase.auth.signInWithOAuth({
     provider: provider as any,
     options: {
