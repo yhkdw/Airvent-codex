@@ -5,9 +5,8 @@
  * 쉽게 호출할 수 있도록 래핑합니다.
  */
 import { PublicKey, SystemProgram } from "@solana/web3.js";
-import { BN } from "@coral-xyz/anchor";
+import { BN, Program } from "@coral-xyz/anchor";
 import {
-    getProgram,
     getSubscriptionPDA,
     getConnection,
     getExplorerUrl,
@@ -47,10 +46,10 @@ export interface TxResult {
  * 계정이 아직 없으면 null을 반환합니다.
  */
 export async function getUserSubscription(
+    program: Program<any>,
     userPublicKey: PublicKey
 ): Promise<SubscriptionInfo | null> {
     try {
-        const program = getProgram();
         const [pda] = getSubscriptionPDA(userPublicKey);
         // @ts-ignore
         const account = await program.account.userState.fetch(pda);
@@ -68,7 +67,7 @@ export async function getUserSubscription(
         };
     } catch (err: any) {
         // Account does not exist (첫 방문 사용자)
-        if (err?.message?.includes("Account does not exist")) {
+        if (err?.message?.includes("Account does not exist") || err?.message?.includes("Account Code Generation Error")) {
             return null;
         }
         throw err;
@@ -93,12 +92,13 @@ export async function hasSubscription(userPublicKey: PublicKey): Promise<boolean
  * 무료 구독 계정을 온체인에 생성합니다.
  * 사용자 지갑과 authority(관리자 서버)의 서명이 필요합니다.
  *
+ * @param program — Anchor Program 인스턴스
  * @param authorityPublicKey — 포인트 적립 권한을 부여할 관리자/오라클 지갑
  */
 export async function initializeFreeSubscription(
+    program: Program<any>,
     authorityPublicKey: PublicKey
 ): Promise<TxResult> {
-    const program = getProgram();
     const user = program.provider.publicKey!;
     const [userStatePDA] = getSubscriptionPDA(user);
 
@@ -127,14 +127,15 @@ export async function initializeFreeSubscription(
  * 무료 구독자에게 포인트를 적립합니다.
  * authority(관리자)의 서명이 필요하므로 일반적으로 서버 사이드에서 호출합니다.
  *
+ * @param program — Anchor Program 인스턴스
  * @param ownerPublicKey — 포인트를 받을 사용자의 지갑 주소
  * @param points — 적립할 포인트 (1~1000)
  */
 export async function earnFreePoints(
+    program: Program<any>,
     ownerPublicKey: PublicKey,
     points: number
 ): Promise<TxResult> {
-    const program = getProgram();
     const authority = program.provider.publicKey!;
     const [userStatePDA] = getSubscriptionPDA(ownerPublicKey);
 
@@ -161,12 +162,13 @@ export async function earnFreePoints(
 /**
  * 하드웨어 노드를 등록하고 프리미엄으로 업그레이드합니다.
  *
+ * @param program — Anchor Program 인스턴스
  * @param hardwareSerial — 하드웨어 시리얼 번호 (1~64자)
  */
 export async function upgradeToPremium(
+    program: Program<any>,
     hardwareSerial: string
 ): Promise<TxResult> {
-    const program = getProgram();
     const user = program.provider.publicKey!;
     const [userStatePDA] = getSubscriptionPDA(user);
 
@@ -191,9 +193,12 @@ export async function upgradeToPremium(
 
 /**
  * 프리미엄을 해제하고 무료 구독으로 전환합니다.
+ *
+ * @param program — Anchor Program 인스턴스
  */
-export async function downgradeFromPremium(): Promise<TxResult> {
-    const program = getProgram();
+export async function downgradeFromPremium(
+    program: Program<any>
+): Promise<TxResult> {
     const user = program.provider.publicKey!;
     const [userStatePDA] = getSubscriptionPDA(user);
 

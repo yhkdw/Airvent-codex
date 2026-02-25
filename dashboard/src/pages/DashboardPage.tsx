@@ -1,48 +1,28 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate, Outlet } from "react-router-dom";
 import { logout } from "../auth";
 import DashboardLayout from "../components/DashboardLayout";
-import {
-  connectPhantom,
-  disconnectPhantom,
-} from "../solana/provider";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 
 export default function DashboardPage() {
   const nav = useNavigate();
+  const { publicKey, disconnect, connecting } = useWallet();
+  const { setVisible } = useWalletModal();
   const [balance, setBalance] = useState(12.34);
-  const [walletAddress, setWalletAddress] = useState<string | null>(null);
-  const [isConnecting, setIsConnecting] = useState(false);
 
-  // 초기 지갑 상태 확인 및 자동 연결
-  useEffect(() => {
-    const tryAutoConnect = async () => {
-      try {
-        const pubkey = await connectPhantom(true);
-        if (pubkey) {
-          setWalletAddress(pubkey.toString());
-        }
-      } catch (err) {
-        console.error("Auto-connect failed:", err);
-      }
-    };
-    tryAutoConnect();
-  }, []);
+  const walletAddress = publicKey ? publicKey.toString() : null;
 
-  const handleConnect = async () => {
-    try {
-      setIsConnecting(true);
-      const pubkey = await connectPhantom();
-      setWalletAddress(pubkey.toString());
-    } catch (err: any) {
-      alert(err.message || "Failed to connect wallet");
-    } finally {
-      setIsConnecting(false);
-    }
+  const handleConnect = () => {
+    setVisible(true);
   };
 
   const handleDisconnect = async () => {
-    await disconnectPhantom();
-    setWalletAddress(null);
+    try {
+      await disconnect();
+    } catch (err) {
+      console.error("Failed to disconnect:", err);
+    }
   };
 
   const handleLogout = async () => {
@@ -51,14 +31,14 @@ export default function DashboardPage() {
   };
 
   const handleReward = (amt: number) => {
-    setBalance((b) => Math.round((b + amt) * 100) / 100);
+    setBalance((b: number) => Math.round((b + amt) * 100) / 100);
   };
 
   return (
     <DashboardLayout
       balance={balance}
       walletAddress={walletAddress}
-      isConnecting={isConnecting}
+      isConnecting={connecting}
       onConnect={handleConnect}
       onDisconnect={handleDisconnect}
       onLogout={handleLogout}

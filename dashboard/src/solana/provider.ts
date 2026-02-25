@@ -29,28 +29,6 @@ export const RPC_ENDPOINT: string =
     import.meta.env.VITE_SOLANA_RPC || clusterApiUrl(CLUSTER);
 
 // ──────────────────────────────────────────
-// Phantom 지갑 타입
-// ──────────────────────────────────────────
-
-interface PhantomWallet {
-    isPhantom: boolean;
-    publicKey: PublicKey | null;
-    connect: (opts?: { onlyIfTrusted?: boolean }) => Promise<{ publicKey: PublicKey }>;
-    disconnect: () => Promise<void>;
-    signTransaction: (tx: any) => Promise<any>;
-    signAllTransactions: (txs: any[]) => Promise<any[]>;
-    on: (event: string, callback: (...args: any[]) => void) => void;
-    off: (event: string, callback: (...args: any[]) => void) => void;
-}
-
-/** window에 Phantom 타입 추가 */
-declare global {
-    interface Window {
-        solana?: PhantomWallet;
-    }
-}
-
-// ──────────────────────────────────────────
 // 연결 유틸리티
 // ──────────────────────────────────────────
 
@@ -64,83 +42,25 @@ export function getConnection(): Connection {
     return _connection;
 }
 
-/**
- * Phantom 지갑이 설치되어 있는지 확인
- */
-export function isPhantomInstalled(): boolean {
-    const solana = getPhantomProvider();
-    return !!solana?.isPhantom;
-}
-
-/**
- * Phantom 지갑 제공자 가져오기
- */
-function getPhantomProvider() {
-    if (typeof window === "undefined") return null;
-
-    if ("phantom" in window) {
-        const anyWindow = window as any;
-        const provider = anyWindow.phantom?.solana;
-        if (provider?.isPhantom) {
-            return provider;
-        }
-    }
-    return window.solana;
-}
-
-/**
- * Phantom 지갑에 연결하고 publicKey를 반환
- */
-export async function connectPhantom(onlyIfTrusted = false): Promise<PublicKey> {
-    const provider = getPhantomProvider();
-
-    if (!provider?.isPhantom) {
-        if (onlyIfTrusted) return null as any; // Silent fail for auto-connect
-        throw new Error("Phantom 지갑이 설치되어 있지 않거나 감지되지 않았습니다. https://phantom.app 에서 설치를 확인해 주세요.");
-    }
-
-    try {
-        const resp = await provider.connect(onlyIfTrusted ? { onlyIfTrusted: true } : undefined);
-        return resp.publicKey;
-    } catch (err: any) {
-        if (onlyIfTrusted) return null as any; // Silent fail for auto-connect
-        throw new Error(err.message || "지갑 연결 중 오류가 발생했습니다.");
-    }
-}
-
-/**
- * Phantom 지갑 연결 해제
- */
-export async function disconnectPhantom(): Promise<void> {
-    if (window.solana) {
-        await window.solana.disconnect();
-    }
-}
-
-/**
- * 현재 연결된 지갑의 PublicKey 반환 (연결 안됐으면 null)
- */
-export function getWalletPublicKey(): PublicKey | null {
-    return window.solana?.publicKey ?? null;
-}
-
 // ──────────────────────────────────────────
 // Anchor Provider & Program
 // ──────────────────────────────────────────
 
+interface AnchorWallet {
+    publicKey: PublicKey;
+    signTransaction: (transaction: any) => Promise<any>;
+    signAllTransactions: (transactions: any[]) => Promise<any[]>;
+}
+
 /**
  * AnchorProvider를 생성합니다.
- * Phantom 지갑이 연결된 상태에서 호출해야 합니다.
+ * Wallet Adapter의 useAnchorWallet() 결과를 인자로 받습니다.
  */
-export function getProvider(): AnchorProvider {
-    if (!window.solana?.publicKey) {
-        throw new Error("지갑이 연결되어 있지 않습니다. 먼저 connectPhantom()을 호출하세요.");
-    }
-
+export function getProvider(wallet: AnchorWallet): AnchorProvider {
     const connection = getConnection();
     const provider = new AnchorProvider(
         connection,
-        window.solana as any,
+        wallet as any,
         { commitment: "confirmed" }
     );
     return provider;
@@ -149,8 +69,8 @@ export function getProvider(): AnchorProvider {
 /**
  * Anchor Program 인스턴스를 생성합니다.
  */
-export function getProgram(): Program<any> {
-    const provider = getProvider();
+export function getProgram(wallet: AnchorWallet): Program<any> {
+    const provider = getProvider(wallet);
     // @ts-ignore - IDL version mismatch
     return new Program(IDL as any, provider);
 }

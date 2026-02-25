@@ -9,17 +9,14 @@
  *   이 파일을 Airvent_Dashboard/src/components/ 폴더에 복사한 뒤,
  *   DashboardPage.tsx에서 <SubscriptionCard /> 를 추가하세요.
  */
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
+import { useWallet, useAnchorWallet } from "@solana/wallet-adapter-react";
+import { useWalletModal } from "@solana/wallet-adapter-react-ui";
+import { PublicKey } from "@solana/web3.js";
 
-// ─── Solana import (경로는 대시보드에 맞게 수정) ───
-// 아래 import는 app/solana/ 경로 기준입니다.
-// 대시보드 프로젝트에 복사할 때 상대 경로를 조정하세요.
 import {
-    isPhantomInstalled,
-    connectPhantom,
-    disconnectPhantom,
-    getWalletPublicKey,
     getExplorerUrl,
+    getProgram,
 } from "../solana/provider";
 import {
     getUserSubscription,
@@ -32,22 +29,35 @@ import {
 type CardStatus = "disconnected" | "loading" | "no_account" | "active" | "error";
 
 export default function SubscriptionCard() {
+    const { publicKey, disconnect, connected } = useWallet();
+    const { setVisible } = useWalletModal();
+    const anchorWallet = useAnchorWallet();
+
     const [status, setStatus] = useState<CardStatus>("disconnected");
     const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null);
-    const [walletAddress, setWalletAddress] = useState<string>("");
     const [error, setError] = useState<string>("");
     const [txPending, setTxPending] = useState(false);
+    const [isPolling, setIsPolling] = useState(false); // 브릿지 결제 완료 후 온체인 업데이트 대기 상태
     const [lastTxUrl, setLastTxUrl] = useState<string>("");
     const [serialInput, setSerialInput] = useState("");
 
+    const walletAddress = publicKey ? publicKey.toBase58() : "";
+
+    const program = useMemo(() => {
+        if (!anchorWallet) return null;
+        return getProgram(anchorWallet as any);
+    }, [anchorWallet]);
+
     // ── 구독 상태 새로고침 ──
     const refreshSubscription = useCallback(async () => {
-        const pubkey = getWalletPublicKey();
-        if (!pubkey) return;
+        if (!program || !publicKey) {
+            if (!connected) setStatus("disconnected");
+            return;
+        }
 
         setStatus("loading");
         try {
-            const info = await getUserSubscription(pubkey);
+            const info = await getUserSubscription(program, publicKey);
             if (info) {
                 setSubscription(info);
                 setStatus("active");
@@ -59,38 +69,29 @@ export default function SubscriptionCard() {
             setError(err.message || "구독 상태 조회 실패");
             setStatus("error");
         }
-    }, []);
+    }, [program, publicKey, connected]);
 
     // ── 지갑 연결 ──
-    const handleConnect = async () => {
-        try {
-            setError("");
-            const pubkey = await connectPhantom();
-            if (pubkey) {
-                setWalletAddress(pubkey.toBase58());
-                await refreshSubscription();
-            }
-        } catch (err: any) {
-            setError(err.message || "지갑 연결 실패");
-        }
+    const handleConnect = () => {
+        setVisible(true);
     };
 
     // ── 지갑 해제 ──
     const handleDisconnect = async () => {
-        await disconnectPhantom();
-        setWalletAddress("");
+        await disconnect();
         setSubscription(null);
         setStatus("disconnected");
     };
 
     // ── 무료 계정 생성 ──
     const handleInitialize = async () => {
+        if (!program) return;
         setTxPending(true);
         setError("");
         try {
             // authority는 일반적으로 서버 지갑이지만, 데모에서는 본인 지갑 사용
-            const pubkey = getWalletPublicKey()!;
-            const result = await initializeFreeSubscription(pubkey);
+            const pubkey = publicKey!;
+            const result = await initializeFreeSubscription(program, pubkey);
             setLastTxUrl(result.explorerUrl);
             await refreshSubscription();
         } catch (err: any) {
@@ -102,14 +103,14 @@ export default function SubscriptionCard() {
 
     // ── 프리미엄 업그레이드 ──
     const handleUpgrade = async () => {
-        if (!serialInput.trim()) {
-            setError("하드웨어 시리얼 번호를 입력하세요.");
+        if (!program || !serialInput.trim()) {
+            if (!serialInput.trim()) setError("하드웨어 시리얼 번호를 입력하세요.");
             return;
         }
         setTxPending(true);
         setError("");
         try {
-            const result = await upgradeToPremium(serialInput.trim());
+            const result = await upgradeToPremium(program, serialInput.trim());
             setLastTxUrl(result.explorerUrl);
             setSerialInput("");
             await refreshSubscription();
@@ -122,10 +123,11 @@ export default function SubscriptionCard() {
 
     // ── 프리미엄 해제 ──
     const handleDowngrade = async () => {
+        if (!program) return;
         setTxPending(true);
         setError("");
         try {
-            const result = await downgradeFromPremium();
+            const result = await downgradeFromPremium(program);
             setLastTxUrl(result.explorerUrl);
             await refreshSubscription();
         } catch (err: any) {
@@ -135,21 +137,83 @@ export default function SubscriptionCard() {
         }
     };
 
-    // ── 자동 연결 시도 (이미 연결된 경우) ──
-    useEffect(() => {
-        const tryAutoConnect = async () => {
-            try {
-                const pubkey = await connectPhantom(true);
-                if (pubkey) {
-                    setWalletAddress(pubkey.toBase58());
-                    await refreshSubscription();
+    // ── 카드 결제 (Paddle) ──
+    const handlePaddlePayment = async () => {
+        setTxPending(true);
+        setError("");
+        try {
+            const paddle = (window as any).Paddle;
+            if (!paddle) throw new Error("Paddle SDK가 로드되지 않았습니다.");
+
+            // Paddle 초기화 (데모용 클라이언트 토큰)
+            paddle.Initialize({
+                token: "test_...", // 실제 클라이언트 토큰으로 교체 필요
+                environment: "sandbox"
+            });
+
+            // 체크아웃 열기
+            paddle.Checkout.open({
+                settings: {
+                    displayMode: "overlay",
+                    theme: "dark",
+                    locale: "ko"
+                },
+                customData: {
+                    wallet_address: walletAddress // 백엔드 웹후크에서 인식할 지갑 주소
+                },
+                eventCallback: (event: any) => {
+                    if (event.name === "checkout.completed") {
+                        console.log("Paddle Checkout Completed:", event.data);
+                        setIsPolling(true); // 온체인 업데이트 대기 시작
+                        alert("결제가 완료되었습니다! 온체인 구독 상태가 업데이트될 때까지 잠시만 기다려주세요.");
+                    }
+                },
+                items: [
+                    {
+                        priceId: "pri_...", // 실제 Price ID로 교체 필요
+                        quantity: 1
+                    }
+                ],
+                customer: {
+                    email: "demo@example.com"
                 }
-            } catch (err) {
-                console.error("SubscriptionCard auto-connect failed:", err);
-            }
-        };
-        tryAutoConnect();
-    }, [refreshSubscription]);
+            });
+
+            // 데모 시뮬레이션 알림
+            setTimeout(() => {
+                alert("Paddle 결제창이 호출되었습니다. (데모 시뮬레이션)");
+                alert("결제 완료 후 하드웨어 시리얼을 입력하여 프리미엄 노드로 등록하세요.");
+            }, 1000);
+        } catch (err: any) {
+            setError(err.message || "결제 실패");
+        } finally {
+            setTxPending(false);
+        }
+    };
+
+    // ── 브릿지 결제 후 온체인 상태 폴링 ──
+    useEffect(() => {
+        let interval: any;
+        if (isPolling && program && publicKey) {
+            interval = setInterval(async () => {
+                console.log("Polling for on-chain update...");
+                const info = await getUserSubscription(program, publicKey);
+                if (info && info.isPremium) {
+                    setIsPolling(false);
+                    await refreshSubscription();
+                    alert("축하합니다! 온체인 프리미엄 업그레이드가 완료되었습니다.");
+                }
+            }, 5000); // 5초마다 확인
+        }
+        return () => clearInterval(interval);
+    }, [isPolling, program, publicKey, refreshSubscription]);
+
+    // ── 초기 연결 시 새로고침 ──
+    useEffect(() => {
+        if (connected) {
+            refreshSubscription();
+        }
+    }, [connected, refreshSubscription]);
 
     // ── 주소 축약 ──
     const shortenAddress = (addr: string) =>
@@ -274,22 +338,64 @@ export default function SubscriptionCard() {
 
                         {/* 업그레이드/다운그레이드 버튼 */}
                         {!subscription.isPremium ? (
-                            <div className="space-y-2">
-                                <input
-                                    type="text"
-                                    value={serialInput}
-                                    onChange={(e) => setSerialInput(e.target.value)}
-                                    placeholder="하드웨어 시리얼 번호 입력"
-                                    maxLength={64}
-                                    className="w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2.5 text-sm outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all"
-                                />
-                                <button
-                                    onClick={handleUpgrade}
-                                    disabled={txPending}
-                                    className="w-full rounded-xl bg-amber-500 text-slate-950 font-bold py-2.5 hover:bg-amber-400 disabled:bg-slate-600 disabled:text-slate-400 transition-all"
-                                >
-                                    {txPending ? "처리 중..." : "⚡ 프리미엄 업그레이드"}
-                                </button>
+                            <div className="space-y-3">
+                                {/* Paddle 결제 섹션 */}
+                                <div className="p-4 rounded-xl border border-slate-700 bg-slate-800/40">
+                                    <div className="flex items-center justify-between mb-3">
+                                        <div className="flex flex-col">
+                                            <span className="text-sm font-medium text-slate-200">플랜 구매 (Paddle)</span>
+                                            <span className="text-[10px] text-slate-400">Merchant of Record (글로벌 세금 처리)</span>
+                                        </div>
+                                        <span className="text-sm font-bold text-purple-400">$99 / nodes</span>
+                                    </div>
+                                    <button
+                                        onClick={handlePaddlePayment}
+                                        disabled={txPending || isPolling}
+                                        className="w-full flex items-center justify-center gap-2 rounded-xl bg-slate-100 text-slate-950 font-bold py-2 hover:bg-white disabled:bg-slate-500 transition-all"
+                                    >
+                                        {isPolling ? (
+                                            <>
+                                                <svg className="animate-spin h-5 w-5 text-slate-950" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                </svg>
+                                                온체인 업데이트 대기 중...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                                                    <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z" />
+                                                </svg>
+                                                카드/PayPal로 결제하기
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
+
+                                <div className="relative flex items-center py-1">
+                                    <div className="flex-grow border-t border-slate-800"></div>
+                                    <span className="flex-shrink mx-4 text-xs text-slate-500 font-bold">OR</span>
+                                    <div className="flex-grow border-t border-slate-800"></div>
+                                </div>
+
+                                {/* 하드웨어 등록 섹션 */}
+                                <div className="space-y-2">
+                                    <input
+                                        type="text"
+                                        value={serialInput}
+                                        onChange={(e) => setSerialInput(e.target.value)}
+                                        placeholder="하드웨어 시리얼 번호 입력"
+                                        maxLength={64}
+                                        className="w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2.5 text-sm outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 transition-all"
+                                    />
+                                    <button
+                                        onClick={handleUpgrade}
+                                        disabled={txPending}
+                                        className="w-full rounded-xl bg-amber-500 text-slate-950 font-bold py-2.5 hover:bg-amber-400 disabled:bg-slate-600 disabled:text-slate-400 transition-all"
+                                    >
+                                        {txPending ? "처리 중..." : "⚡ 프리미엄 업그레이드"}
+                                    </button>
+                                </div>
                             </div>
                         ) : (
                             <button

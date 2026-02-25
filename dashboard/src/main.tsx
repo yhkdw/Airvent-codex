@@ -9,11 +9,14 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import "./styles/index.css";
 import "./i18n/config";
+import { WalletContextProvider } from "./solana/WalletContextProvider";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <WalletContextProvider>
+        <App />
+      </WalletContextProvider>
     </BrowserRouter>
   </React.StrictMode>,
 );
