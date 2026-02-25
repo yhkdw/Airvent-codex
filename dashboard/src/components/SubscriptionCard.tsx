@@ -239,10 +239,9 @@ export default function SubscriptionCard() {
                     {status === "disconnected" ? (
                         <button
                             onClick={handleConnect}
-                            disabled={!isPhantomInstalled()}
-                            className="rounded-xl bg-purple-600 hover:bg-purple-500 disabled:bg-slate-700 disabled:cursor-not-allowed px-4 py-2 text-sm font-medium transition-all"
+                            className="rounded-xl bg-purple-600 hover:bg-purple-500 px-4 py-2 text-sm font-medium transition-all"
                         >
-                            {isPhantomInstalled() ? "🔗 지갑 연결" : "⚠ Phantom 필요"}
+                            🔗 지갑 연결
                         </button>
                     ) : (
                         <button
