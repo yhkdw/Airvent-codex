@@ -17,22 +17,23 @@ export async function loginWithEmail(email: string, password: string) {
 }
 
 export async function loginWithSocial(provider: 'google' | 'twitter' | 'naver' | 'kakao') {
-  console.log(`[Auth] Initiating social login...`);
-
-  // For the new 'X / Twitter (OAuth 2.0)' provider in Supabase, 
-  // the provider string is often 'x' instead of 'twitter'.
   const providerKey = provider === 'twitter' ? 'x' : provider;
-
-  console.log(`[Auth] Provider string used: ${providerKey}`);
+  console.log(`[Auth] Initiating social login for provider: ${providerKey}`);
   console.log(`[Auth] Redirect: ${window.location.origin}/dashboard`);
 
-  return await supabase.auth.signInWithOAuth({
+  const { data, error } = await supabase.auth.signInWithOAuth({
     provider: providerKey as any,
     options: {
       redirectTo: window.location.origin + '/dashboard',
       skipBrowserRedirect: false
     }
   });
+
+  if (error) {
+    console.error(`[Auth] Social login error details:`, error);
+  }
+
+  return { data, error };
 }
 
 export async function logout(): Promise<void> {
