@@ -83,18 +83,25 @@ export function getProgram(wallet: AnchorWallet): Program<any> {
  * 사용자의 구독 상태 PDA 주소를 계산합니다.
  */
 export function getSubscriptionPDA(userPublicKey: PublicKey): [PublicKey, number] {
-    // 1. PublicKey 인스턴스 호환성 보장 (가장 원시적인 bytes로 변환 후 재생성)
-    const ownerPubkey = new PublicKey(userPublicKey.toBytes());
+    try {
+        // Uint8Array 기반 시드 생성 (Buffer보다 브라우저 환경에서 호환성이 높음)
+        const seedSubscription = new TextEncoder().encode("subscription");
+        const seedUser = userPublicKey.toBytes();
 
-    // 2. 모든 Seed를 명시적으로 Buffer.from()으로 감싸서 'Expected Buffer' 에러 원천 차단
-    // TextEncoder().encode() 결과나 toBytes() 결과를 현재 파일의 Buffer로 다시 한번 감싸줍니다.
-    const seedSubscription = Buffer.from(new TextEncoder().encode("subscription"));
-    const seedUser = Buffer.from(ownerPubkey.toBytes());
-
-    return PublicKey.findProgramAddressSync(
-        [seedSubscription, seedUser],
-        PROGRAM_ID
-    );
+        return PublicKey.findProgramAddressSync(
+            [seedSubscription, seedUser],
+            PROGRAM_ID
+        );
+    } catch (err: any) {
+        // 'Expected Buffer' 에러 대응을 위한 폴백 (일부 환경/버전용)
+        if (err.message?.includes("Buffer")) {
+            return PublicKey.findProgramAddressSync(
+                [Buffer.from("subscription"), Buffer.from(userPublicKey.toBytes())],
+                PROGRAM_ID
+            );
+        }
+        throw err;
+    }
 }
 
 /**

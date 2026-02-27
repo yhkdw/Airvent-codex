@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Outlet } from "react-router-dom";
 import { logout } from "../auth";
 import DashboardLayout from "../components/DashboardLayout";
@@ -7,9 +7,15 @@ import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 
 export default function DashboardPage() {
   const nav = useNavigate();
-  const { publicKey, disconnect, connecting } = useWallet();
+  // connecting은 연결 중이지만 아직 완료되지 않은 상태. connected가 true면 더 이상 connecting이 아님.
+  const { publicKey, disconnect, connecting, connected, wallet } = useWallet();
   const { setVisible } = useWalletModal();
   const [balance, setBalance] = useState(12.34);
+
+  useEffect(() => {
+    console.log("[WalletDebug] Connection status:", { connected, connecting, hasPublicKey: !!publicKey });
+    if (wallet) console.log("[WalletDebug] Active wallet:", wallet.adapter.name);
+  }, [connected, connecting, publicKey, wallet]);
 
   const walletAddress = publicKey ? publicKey.toString() : null;
 
@@ -38,7 +44,7 @@ export default function DashboardPage() {
     <DashboardLayout
       balance={balance}
       walletAddress={walletAddress}
-      isConnecting={connecting}
+      isConnecting={connecting && !connected}
       onConnect={handleConnect}
       onDisconnect={handleDisconnect}
       onLogout={handleLogout}

@@ -196,22 +196,29 @@ export default function SubscriptionCard() {
         let interval: any;
         if (isPolling && program && publicKey) {
             interval = setInterval(async () => {
-                console.log("Polling for on-chain update...");
-                const info = await getUserSubscription(program, publicKey);
-                if (info && info.isPremium) {
-                    setIsPolling(false);
-                    await refreshSubscription();
-                    alert("축하합니다! 온체인 프리미엄 업그레이드가 완료되었습니다.");
+                try {
+                    console.log("Polling for on-chain update...");
+                    const info = await getUserSubscription(program, publicKey);
+                    if (info && info.isPremium) {
+                        setIsPolling(false);
+                        await refreshSubscription();
+                        alert("축하합니다! 온체인 프리미엄 업그레이드가 완료되었습니다.");
+                    }
+                } catch (e: any) {
+                    console.error("Polling error:", e);
                 }
             }, 5000); // 5초마다 확인
         }
         return () => clearInterval(interval);
     }, [isPolling, program, publicKey, refreshSubscription]);
 
-    // ── 초기 연결 시 새로고침 ──
+    // ── 연결 상태 변경 감지 및 동기화 ──
     useEffect(() => {
         if (connected) {
             refreshSubscription();
+        } else {
+            setSubscription(null);
+            setStatus("disconnected");
         }
     }, [connected, refreshSubscription]);
 
@@ -408,8 +415,28 @@ export default function SubscriptionCard() {
                     </div>
                 )}
 
-                {/* 에러 메시지 (기술적인 Expected Buffer 에러는 숨김 처리) */}
-                {error && !error.includes("Expected Buffer") && (
+                {status === "error" && (
+                    <div className="space-y-4">
+                        <div className="bg-rose-950/20 rounded-xl border border-rose-500/30 p-6 text-center">
+                            <div className="w-12 h-12 bg-rose-500/20 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
+                            </div>
+                            <div className="text-sm text-rose-200 font-bold mb-2">구독 상태를 불러오는 중 오류가 발생했습니다.</div>
+                            <div className="text-xs text-rose-400 font-mono mb-4 bg-black/40 p-3 rounded-lg break-all">
+                                {error}
+                            </div>
+                            <button
+                                onClick={refreshSubscription}
+                                className="rounded-xl border border-rose-500/50 bg-rose-500/10 text-rose-100 font-bold px-6 py-2.5 hover:bg-rose-500/20 transition-all text-sm"
+                            >
+                                🔄 다시 시도하기
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {/* 에러 메시지 (하단 작은 알림) */}
+                {error && status !== "error" && (
                     <div className="mt-3 text-sm text-rose-400 bg-rose-950/30 border border-rose-900/50 rounded-xl px-4 py-3">
                         ⚠ {error}
                     </div>

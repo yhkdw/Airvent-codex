@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import SubscriptionCard from "../../components/SubscriptionCard";
+import { WalletErrorBoundary } from "../../components/WalletErrorBoundary";
 import { Shield, ArrowUpRight, ArrowDownLeft, RefreshCw, Send, History } from "lucide-react";
 
 export default function WalletTab() {
@@ -105,7 +106,9 @@ export default function WalletTab() {
                 </div>
             </div>
 
-            <SubscriptionCard />
+            <WalletErrorBoundary>
+                <SubscriptionCard />
+            </WalletErrorBoundary>
 
             <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6">
                 <div className="flex items-center justify-between mb-6">
