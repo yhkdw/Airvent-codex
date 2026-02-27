@@ -1,13 +1,23 @@
 import { useState, useEffect } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { isAuthed } from "../auth";
+import { supabase } from "../lib/supabaseClient";
 
 export default function RequireAuth() {
   const loc = useLocation();
   const [authed, setAuthed] = useState<boolean | null>(null);
 
   useEffect(() => {
-    isAuthed().then(setAuthed);
+    // 1. 초기 세션 확인
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setAuthed(!!session);
+    });
+
+    // 2. 인증 상태 변경 구독 (OAuth 리다이렉트 처리 등)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setAuthed(!!session);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   if (authed === null) {

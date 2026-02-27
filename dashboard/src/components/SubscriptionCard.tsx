@@ -45,7 +45,12 @@ export default function SubscriptionCard() {
 
     const program = useMemo(() => {
         if (!anchorWallet) return null;
-        return getProgram(anchorWallet as any);
+        try {
+            return getProgram(anchorWallet as any);
+        } catch (err: any) {
+            console.error('[SubscriptionCard] getProgram error:', err?.message);
+            return null;
+        }
     }, [anchorWallet]);
 
     // ── 구독 상태 새로고침 ──
