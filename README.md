@@ -98,3 +98,21 @@ import SubscriptionCard from "../components/SubscriptionCard";
 - **단일 적립 제한**: 최대 1,000 포인트/건
 - **오버플로우 보호**: `checked_add`로 안전하게 처리
 - **PDA 기반**: 사용자당 하나의 고유 계정 (seeds: `["subscription", user_pubkey]`)
+
+## 🛡️ 데이터 위변조 검증 (Data Tampering Verification)
+
+AirVent 플랫폼은 공기질 데이터의 무결성을 보장하기 위해 HMAC-SHA256 기반의 검증 시스템을 제공합니다.
+
+### 📋 주요 검증 항목
+1. **무결성 검증**: 서버/디바이스 비밀키를 이용한 HMAC 서명 비교
+2. **연속성 검증**: 타임스탬프 역행 여부 확인
+3. **이상치 검증**: 급격한 데이터 변화 감지 (Suspicious 판정)
+
+### 🚀 실행 방법
+```bash
+python air_quality_validator.py --input sample_data.jsonl --secret airvent-demo-key
+```
+
+### 📂 파일 구성
+- `air_quality_validator.py`: 검증 로직 및 CLI 툴
+- `sample_data.jsonl`: 테스트용 예시 데이터 (정상/변조/의심 데이터 포함)
