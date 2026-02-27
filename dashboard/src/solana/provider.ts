@@ -21,8 +21,16 @@ export const PROGRAM_ID = new PublicKey(
 /** Solana 클러스터 (testnet / devnet / mainnet-beta) */
 export type SolanaCluster = "testnet" | "devnet" | "mainnet-beta";
 
-export const CLUSTER: SolanaCluster =
-    (import.meta.env.VITE_SOLANA_CLUSTER as SolanaCluster) || "testnet";
+function detectCluster(): SolanaCluster {
+    const envCluster = import.meta.env.VITE_SOLANA_CLUSTER;
+    if (envCluster === "mainnet-beta") return "mainnet-beta";
+    if (envCluster === "devnet") return "devnet";
+    if (envCluster === "testnet") return "testnet";
+    return "devnet"; // 기본값을 데브넷으로 설정
+}
+
+export const CLUSTER: SolanaCluster = detectCluster();
+console.log(`[SolanaProvider] Active Cluster: ${CLUSTER}`);
 
 /** RPC 엔드포인트 (사용자 지정 또는 기본 클러스터) */
 export const RPC_ENDPOINT: string =
