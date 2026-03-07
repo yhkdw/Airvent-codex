@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { loginWithEmail, loginWithSocial } from "../auth";
+import { loginWithEmail, loginWithSocial, isAuthed } from "../auth";
 
 export default function LoginPage() {
   const { t } = useTranslation();
@@ -10,6 +10,15 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    isAuthed().then(authed => {
+      if (authed) {
+        console.log("[Login] Already authenticated, redirecting to /dashboard");
+        nav("/dashboard");
+      }
+    });
+  }, [nav]);
 
   const handleSocialLogin = async (provider: 'google' | 'twitter' | 'naver' | 'kakao') => {
     const { error } = await loginWithSocial(provider);
