@@ -1,4 +1,4 @@
-import { useNavigate, useLocation, Routes, Route, Navigate } from "react-router-dom";
+import { useNavigate, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect } from "react";
 import { supabase } from "./lib/supabaseClient";
 import LandingPage from "./pages/LandingPage";
@@ -16,24 +16,34 @@ import WalletTab from "./pages/dashboard/WalletTab";
 
 export default function App() {
   const navigate = useNavigate();
-  const location = useLocation();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log(`[App] Auth event: ${event}`);
-      if (session) {
-        // Redirect to dashboard if on landing or login page
-        if (location.pathname === "/" || location.pathname === "/login") {
-          console.log("[App] User authenticated, redirecting to /dashboard");
-          navigate("/dashboard");
+
+      // Act on explicit sign-in events OR initial sessions that are actually OAuth callbacks
+      const hasAccessToken = window.location.hash.includes("access_token");
+      if ((event === "SIGNED_IN" || event === "INITIAL_SESSION") && session) {
+        if (event === "INITIAL_SESSION" && !hasAccessToken) return; // Ignore normal page loads
+
+        const currentPath = window.location.pathname;
+        const params = new URLSearchParams(window.location.search);
+        const next = params.get("next");
+
+        console.log(`[App] ${event} event at ${currentPath}, next: ${next}, hasToken: ${hasAccessToken}`);
+
+        if (next) {
+          console.log("[App] Redirecting to next:", next);
+          navigate(next, { replace: true });
+        } else if (currentPath === "/login" || currentPath === "/dashboard" || currentPath.startsWith("/auth/") || hasAccessToken) {
+          console.log(`[App] Auto-redirecting to /`);
+          navigate("/", { replace: true });
         }
       }
     });
 
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [navigate, location.pathname]);
+    return () => { subscription.unsubscribe(); };
+  }, [navigate]);
 
   return (
     <Routes>

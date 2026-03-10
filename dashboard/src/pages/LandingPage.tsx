@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Container from "../components/Container";
-import { isAuthed } from "../auth";
+import { isAuthed, logout } from "../auth";
 
 const isLocal: boolean =
   window.location.hostname === "localhost" ||
@@ -18,8 +18,11 @@ const t = {
     heroTitle: "실내 공기질을 측정하는 노드,\n이제 Testnet의 첫 기여자를 모집합니다",
     heroSub:
       "AirVent는 집·사무실·실내 공간의 공기질을 측정하는 스마트 노드입니다. 노드 출시와 Devnet 검증을 마친 지금, 제품 사용자이자 초기 네트워크 기여자로 함께할 첫 유저를 모집하고 있습니다.",
-    heroCta: "노드 신청하기",
-    heroMore: "더 알아보기",
+    heroCta: "노드 구매하기",
+    heroMore: "앱 DEMO",
+    heroCtaAuthed: "노드 구매하기",
+    heroDash: "대시보드 입장",
+    heroWebDemo: "웹 Demo",
     sections: {
       problems: "왜 AirVent가 필요한가요?",
       whyNow: "현재 단계와 핵심 메시지",
@@ -163,7 +166,304 @@ const t = {
     heroSub:
       "AirVent is a smart node that measures air quality in homes, offices, and indoor spaces. Following our Devnet verification, we are now recruiting the first users to join as product users and early network contributors.",
     heroCta: "Apply for Node",
-    heroMore: "Learn More",
+    heroMore: "App DEMO",
+    heroCtaAuthed: "Apply for Node",
+    heroDash: "Enter Dashboard",
+    heroWebDemo: "Web Demo",
+    sections: {
+      problems: "Why AirVent?",
+      whyNow: "Current Phase & Key Messages",
+      whyNowSub: "AirVent is passing through its most crucial milestone.",
+      howItWorks: "How It Works",
+      howItWorksSub: "From measurement to contribution",
+      timeline: "Network Timeline",
+      benefits: "Participation Benefits",
+      proof: "Proof Coming Soon",
+      faq: "Frequently Asked Questions",
+    },
+    problems: [
+      "Existing air quality monitors are hard to popularize due to cost and limited utility.",
+      "It is difficult to consistently understand indoor air conditions and quickly identify anomalies.",
+      "Even when data is collected, it often fails to connect users with long-term value or engagement.",
+    ],
+    whyNowItems: [
+      {
+        title: "Node Launch Complete",
+        desc: "We are at a stage where early user onboarding can begin based on actual, usable physical nodes.",
+        icon: "radar",
+      },
+      {
+        title: "Devnet Verified",
+        desc: "Highlights the completion of core verification for basic operations, data flow, and network integration.",
+        icon: "shield",
+      },
+      {
+        title: "Initial Testnet Recruitment",
+        desc: "Currently, we focus on building early contributions and real-world validation rather than mass sales.",
+        icon: "flask",
+      },
+    ],
+    howItWorksItems: [
+      {
+        step: "01",
+        title: "Install the Node",
+        desc: "Easily install in indoor spaces like homes, offices, or stores.",
+        icon: "home",
+      },
+      {
+        step: "02",
+        title: "Collect Environment Data",
+        desc: "Measure indoor air quality signals such as Temperature, Humidity, PM, and CO₂.",
+        icon: "activity",
+      },
+      {
+        step: "03",
+        title: "Verify Data Quality",
+        desc: "Review measurement data from a network perspective to enhance reliability.",
+        icon: "shield",
+      },
+      {
+        step: "04",
+        title: "Join as Early Contributor",
+        desc: "Join as a real-world user and early network contributor during the Testnet phase.",
+        icon: "wallet",
+      },
+    ],
+    audienceItems: [
+      {
+        title: "General Users / Early Adopters",
+        icon: "wind",
+        points: [
+          "Users who want to visually monitor air quality in their homes and spaces.",
+          "Users who want to detect anomalies more quickly.",
+          "Users who want to be the first to try new smart devices.",
+        ],
+      },
+      {
+        title: "Blockchain / DePIN Users",
+        icon: "layers",
+        points: [
+          "Users who want to participate from the start of a physical-based data network.",
+          "Users who want to grow with the project from the Testnet stage.",
+          "Users who want to secure an early contributor position.",
+        ],
+      },
+    ],
+    timelineItems: [
+      "Product Design & Node Preparation",
+      "Devnet Verification Complete",
+      "Initial Testnet User Recruitment",
+      "Sequential release of usage data, reviews, and operational proofs",
+      "Network expansion and advanced participation structures",
+    ],
+    benefitItems: [
+      "Early Testnet participation experience",
+      "Priority access to updates and community",
+      "Accumulation of node operation experience",
+      "Preemptive effect for upcoming contribution structures",
+      "Securing an early user position",
+      "Direct involvement in product and network evolution",
+    ],
+    nodeCards: [
+      {
+        name: "AirVent Node",
+        desc: "A smart node designed for indoor air quality sensing and network participation.",
+        specs: ["Indoor IAQ sensing", "Dashboard connected", "Early user ready"],
+      },
+      {
+        name: "AirVent Dashboard",
+        desc: "The starting point for monitoring measurement flows and node status.",
+        specs: ["Node overview", "Status monitoring", "Proof-ready structure"],
+      },
+    ],
+    proofItems: [
+      "Early operator reviews coming soon",
+      "Indoor installation photos and usage cases coming soon",
+      "Dashboard measurement snapshots coming soon",
+      "Testnet operational/contribution data coming soon",
+      "Sequential updates of additional verification reports",
+    ],
+    faqs: [
+      {
+        q: "What kind of product is AirVent?",
+        a: "AirVent is a smart node that measures indoor air quality and serves as an entry point for early participation in a verifiable environmental data network.",
+      },
+      {
+        q: "Is it a commercial launch or a Testnet stage?",
+        a: "Currently, we are at the stage of recruiting initial Testnet users after completing node launch and Devnet verification.",
+      },
+      {
+        q: "Can general users participate?",
+        a: "Yes. It is designed so that even users without blockchain knowledge can participate from an air quality monitoring and product usage perspective.",
+      },
+      {
+        q: "When will reviews and operational data be released?",
+        a: "We plan to sequentially release real-world cases and operational data after the initial user recruitment.",
+      },
+    ],
+    footerTagline: "Hyperlocal Air Quality Network — Powered by Solana",
+    footerLinks: { docs: "Docs", github: "GitHub", blog: "Blog", privacy: "Privacy Policy", terms: "Terms of Service" },
+  },
+  ja: {
+    nav: { about: "紹介", node: "ノード購入", demo: "ダッシュボードDemo" },
+    login: "ログイン",
+    dashboard: "ダッシュボード",
+    heroEyebrow: "DEPIN AIR QUALITY NETWORK",
+    heroTitle: "室内空気質を測定するノード、\nTestnetの最初の貢献者を募集しています",
+    heroSub:
+      "AirVent is a smart node that measures air quality in homes, offices, and indoor spaces. Following our Devnet verification, we are now recruiting the first users to join as product users and early network contributors.",
+    heroCta: "Apply for Node",
+    heroMore: "App DEMO",
+    heroCtaAuthed: "Apply for Node",
+    heroDash: "Enter Dashboard",
+    heroWebDemo: "Web Demo",
+    sections: {
+      problems: "Why AirVent?",
+      whyNow: "Current Phase & Key Messages",
+      whyNowSub: "AirVent is passing through its most crucial milestone.",
+      howItWorks: "How It Works",
+      howItWorksSub: "From measurement to contribution",
+      timeline: "Network Timeline",
+      benefits: "Participation Benefits",
+      proof: "Proof Coming Soon",
+      faq: "Frequently Asked Questions",
+    },
+    problems: [
+      "Existing air quality monitors are hard to popularize due to cost and limited utility.",
+      "It is difficult to consistently understand indoor air conditions and quickly identify anomalies.",
+      "Even when data is collected, it often fails to connect users with long-term value or engagement.",
+    ],
+    whyNowItems: [
+      {
+        title: "Node Launch Complete",
+        desc: "We are at a stage where early user onboarding can begin based on actual, usable physical nodes.",
+        icon: "radar",
+      },
+      {
+        title: "Devnet Verified",
+        desc: "Highlights the completion of core verification for basic operations, data flow, and network integration.",
+        icon: "shield",
+      },
+      {
+        title: "Initial Testnet Recruitment",
+        desc: "Currently, we focus on building early contributions and real-world validation rather than mass sales.",
+        icon: "flask",
+      },
+    ],
+    howItWorksItems: [
+      {
+        step: "01",
+        title: "Install the Node",
+        desc: "Easily install in indoor spaces like homes, offices, or stores.",
+        icon: "home",
+      },
+      {
+        step: "02",
+        title: "Collect Environment Data",
+        desc: "Measure indoor air quality signals such as Temperature, Humidity, PM, and CO₂.",
+        icon: "activity",
+      },
+      {
+        step: "03",
+        title: "Verify Data Quality",
+        desc: "Review measurement data from a network perspective to enhance reliability.",
+        icon: "shield",
+      },
+      {
+        step: "04",
+        title: "Join as Early Contributor",
+        desc: "Join as a real-world user and early network contributor during the Testnet phase.",
+        icon: "wallet",
+      },
+    ],
+    audienceItems: [
+      {
+        title: "General Users / Early Adopters",
+        icon: "wind",
+        points: [
+          "Users who want to visually monitor air quality in their homes and spaces.",
+          "Users who want to detect anomalies more quickly.",
+          "Users who want to be the first to try new smart devices.",
+        ],
+      },
+      {
+        title: "Blockchain / DePIN Users",
+        icon: "layers",
+        points: [
+          "Users who want to participate from the start of a physical-based data network.",
+          "Users who want to grow with the project from the Testnet stage.",
+          "Users who want to secure an early contributor position.",
+        ],
+      },
+    ],
+    timelineItems: [
+      "Product Design & Node Preparation",
+      "Devnet Verification Complete",
+      "Initial Testnet User Recruitment",
+      "Sequential release of usage data, reviews, and operational proofs",
+      "Network expansion and advanced participation structures",
+    ],
+    benefitItems: [
+      "Early Testnet participation experience",
+      "Priority access to updates and community",
+      "Accumulation of node operation experience",
+      "Preemptive effect for upcoming contribution structures",
+      "Securing an early user position",
+      "Direct involvement in product and network evolution",
+    ],
+    nodeCards: [
+      {
+        name: "AirVent Node",
+        desc: "A smart node designed for indoor air quality sensing and network participation.",
+        specs: ["Indoor IAQ sensing", "Dashboard connected", "Early user ready"],
+      },
+      {
+        name: "AirVent Dashboard",
+        desc: "The starting point for monitoring measurement flows and node status.",
+        specs: ["Node overview", "Status monitoring", "Proof-ready structure"],
+      },
+    ],
+    proofItems: [
+      "Early operator reviews coming soon",
+      "Indoor installation photos and usage cases coming soon",
+      "Dashboard measurement snapshots coming soon",
+      "Testnet operational/contribution data coming soon",
+      "Sequential updates of additional verification reports",
+    ],
+    faqs: [
+      {
+        q: "What kind of product is AirVent?",
+        a: "AirVent is a smart node that measures indoor air quality and serves as an entry point for early participation in a verifiable environmental data network.",
+      },
+      {
+        q: "Is it a commercial launch or a Testnet stage?",
+        a: "Currently, we are at the stage of recruiting initial Testnet users after completing node launch and Devnet verification.",
+      },
+      {
+        q: "Can general users participate?",
+        a: "Yes. It is designed so that even users without blockchain knowledge can participate from an air quality monitoring and product usage perspective.",
+      },
+      {
+        q: "When will reviews and operational data be released?",
+        a: "We plan to sequentially release real-world cases and operational data after the initial user recruitment.",
+      },
+    ],
+    footerTagline: "Hyperlocal Air Quality Network — Powered by Solana",
+    footerLinks: { docs: "Docs", github: "GitHub", blog: "Blog", privacy: "Privacy Policy", terms: "Terms of Service" },
+  },
+  'zh-TW': {
+    nav: { about: "介紹", node: "購買節點", demo: "控制面板Demo" },
+    login: "登錄",
+    dashboard: "控制面板",
+    heroEyebrow: "DEPIN AIR QUALITY NETWORK",
+    heroTitle: "測量室內空氣質量的節點、\n現正招募Testnet的首批貢獻者",
+    heroSub:
+      "AirVent is a smart node that measures air quality in homes, offices, and indoor spaces. Following our Devnet verification, we are now recruiting the first users to join as product users and early network contributors.",
+    heroCta: "Apply for Node",
+    heroMore: "App DEMO",
+    heroCtaAuthed: "Apply for Node",
+    heroDash: "Enter Dashboard",
+    heroWebDemo: "Web Demo",
     sections: {
       problems: "Why AirVent?",
       whyNow: "Current Phase & Key Messages",
@@ -313,11 +613,19 @@ export default function LandingPage() {
   const navigate = useNavigate();
   const [lang, setLang] = useState<Lang>("ko");
   const [authenticated, setAuthenticated] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const tx = t[lang];
 
   useEffect(() => {
     isAuthed().then(setAuthenticated);
   }, []);
+
+  const handleLogout = async () => {
+    await logout();
+    setAuthenticated(false);
+    setMenuOpen(false);
+    navigate("/");
+  };
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
@@ -340,24 +648,40 @@ export default function LandingPage() {
             <nav className="hidden md:flex items-center gap-6">
               <a href="#problems" className="text-sm text-slate-400 hover:text-emerald-400 transition-colors">{tx.nav.about}</a>
               <Link to="/node" className="text-sm text-slate-400 hover:text-emerald-400 transition-colors">{tx.nav.node}</Link>
-              <Link to="/dashboard" className="px-4 py-2 rounded-lg bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/20 hover:bg-emerald-500/20 transition-all">
-                {tx.nav.demo}
-              </Link>
+              
             </nav>
 
             {/* Right controls */}
             <div className="flex items-center gap-3">
               <div className="flex gap-1 bg-slate-900 rounded-full p-1 border border-slate-800">
-                {(["ko", "en"] as Lang[]).map((l) => (
+                {(["ko", "en", "ja", "zh-TW"] as Lang[]).map((l) => (
                   <button key={l} onClick={() => setLang(l)}
                     className={`px-3 py-1 rounded-full text-xs font-bold transition-colors ${lang === l ? "bg-emerald-500 text-slate-950" : "text-slate-400 hover:text-slate-200"}`}>
-                    {l.toUpperCase()}
+                    {l.toUpperCase() === "ZH-TW" ? "ZH" : l.toUpperCase()}
                   </button>
                 ))}
               </div>
-              <Link to={authenticated ? "/dashboard" : "/login"} className="rounded-xl bg-emerald-500 text-slate-950 font-bold px-4 py-2 text-sm hover:bg-emerald-400 transition">
-                {authenticated ? tx.dashboard : tx.login}
-              </Link>
+              {authenticated ? (
+                <div className="relative">
+                  <button onClick={() => setMenuOpen(!menuOpen)} className="rounded-xl bg-emerald-500 text-slate-950 font-bold px-4 py-2 text-sm hover:bg-emerald-400 transition flex items-center gap-1">
+                    {lang === "ko" ? "내 계정" : "Account"} <span className="text-xs">{menuOpen ? "▲" : "▼"}</span>
+                  </button>
+                  {menuOpen && (
+                    <div className="absolute right-0 mt-2 w-40 rounded-xl bg-slate-900 border border-slate-700 shadow-xl z-50 overflow-hidden">
+                      <Link to="/dashboard" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-4 py-3 text-sm text-slate-200 hover:bg-slate-800 hover:text-emerald-400 transition-colors">
+                        🏠 {tx.dashboard}
+                      </Link>
+                      <button onClick={handleLogout} className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-400 hover:bg-slate-800 hover:text-red-300 transition-colors">
+                        🚪 {lang === "ko" ? "로그아웃" : "Logout"}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link to="/login" className="rounded-xl bg-emerald-500 text-slate-950 font-bold px-4 py-2 text-sm hover:bg-emerald-400 transition">
+                  {tx.login}
+                </Link>
+              )}
             </div>
           </div>
         </Container>
@@ -384,14 +708,33 @@ export default function LandingPage() {
                   {tx.heroSub}
                 </p>
                 <div className="flex flex-wrap gap-4">
-                  <Link to="/node"
-                    className="inline-flex items-center gap-2 rounded-xl bg-emerald-500 text-slate-950 font-bold px-8 py-4 text-base hover:bg-emerald-400 transition shadow-lg shadow-emerald-500/20 transform hover:-translate-y-0.5">
-                    {tx.heroCta}
-                    <span>→</span>
-                  </Link>
-                  <a href="#problems" className="inline-flex items-center gap-2 rounded-xl border border-slate-700 text-slate-400 font-semibold px-8 py-4 text-base hover:border-slate-500 hover:text-white transition">
-                    {tx.heroMore}
-                  </a>
+                  {authenticated ? (
+                    <>
+                      <Link to="/node" className="inline-flex items-center gap-2 rounded-xl bg-emerald-500 text-slate-950 font-bold px-8 py-4 text-base hover:bg-emerald-400 transition shadow-lg shadow-emerald-500/20 transform hover:-translate-y-0.5">
+                        {tx.heroCtaAuthed}
+                        <span>→</span>
+                      </Link>
+                      <Link to="/dashboard" className="inline-flex items-center gap-2 rounded-xl bg-blue-500 text-white font-bold px-8 py-4 text-base hover:bg-blue-400 transition shadow-lg shadow-blue-500/20 transform hover:-translate-y-0.5">
+                        {tx.heroDash}
+                      </Link>
+                      <a href="/demo/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-slate-700 text-slate-400 font-semibold px-8 py-4 text-base hover:border-slate-500 hover:text-white transition">
+                        {tx.heroMore}
+                      </a>
+                    </>
+                  ) : (
+                    <>
+                      <Link to="/node" className="inline-flex items-center gap-2 rounded-xl bg-emerald-500 text-slate-950 font-bold px-8 py-4 text-base hover:bg-emerald-400 transition shadow-lg shadow-emerald-500/20 transform hover:-translate-y-0.5">
+                        {tx.heroCta}
+                        <span>→</span>
+                      </Link>
+                      <a href="/demo/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-slate-700 text-slate-400 font-semibold px-8 py-4 text-base hover:border-slate-500 hover:text-white transition">
+                        {tx.heroMore}
+                      </a>
+                      <Link to="/judge" className="inline-flex items-center gap-2 rounded-xl border border-blue-500/50 text-blue-400 font-semibold px-8 py-4 text-base hover:border-blue-400 hover:text-white transition">
+                        {tx.heroWebDemo}
+                      </Link>
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -521,29 +864,7 @@ export default function LandingPage() {
           </Container>
         </section>
 
-        {/* ── Node Cards ── */}
-        <section className="py-24 border-t border-slate-800/50">
-          <Container>
-            <div className="grid md:grid-cols-2 gap-8">
-              {tx.nodeCards.map((card, i) => (
-                <div key={i} className="group p-10 rounded-3xl bg-slate-900 border border-slate-800 hover:border-emerald-500/30 transition-all overflow-hidden relative">
-                  <div className="absolute top-0 right-0 p-8 text-6xl opacity-10 group-hover:opacity-20 transition-opacity">
-                    {i === 0 ? "📦" : "🖥️"}
-                  </div>
-                  <h3 className="text-2xl font-bold text-white mb-4">{card.name}</h3>
-                  <p className="text-slate-400 mb-8 max-w-xs">{card.desc}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {card.specs.map((s, j) => (
-                      <span key={j} className="px-3 py-1 rounded-full bg-slate-800 text-slate-400 text-[10px] font-bold border border-slate-700">
-                        {s}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Container>
-        </section>
+
 
 
         {/* ── Proof & FAQ ── */}
@@ -612,8 +933,8 @@ export default function LandingPage() {
               <div>
                 <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Legal</h4>
                 <ul className="space-y-2.5 text-sm text-slate-500">
-                  <li><a href="#" className="hover:text-emerald-400 transition-colors">{tx.footerLinks.privacy}</a></li>
-                  <li><a href="#" className="hover:text-emerald-400 transition-colors">{tx.footerLinks.terms}</a></li>
+                  <li><a href="/privacy" className="hover:text-emerald-400 transition-colors">{tx.footerLinks.privacy}</a></li>
+                  <li><a href="/terms" className="hover:text-emerald-400 transition-colors">{tx.footerLinks.terms}</a></li>
                 </ul>
               </div>
               <div>
