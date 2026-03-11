@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Container from "../components/Container";
-import { isAuthed, logout } from "../auth";
+import { isAuthed, logout, getNickname } from "../auth";
 
 const isLocal: boolean =
   window.location.hostname === "localhost" ||
@@ -613,11 +613,44 @@ export default function LandingPage() {
   const navigate = useNavigate();
   const [lang, setLang] = useState<Lang>("ko");
   const [authenticated, setAuthenticated] = useState(false);
+  const [nickname, setNickname] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showToast, setShowToast] = useState(false);
   const tx = t[lang];
 
   useEffect(() => {
-    isAuthed().then(setAuthenticated);
+    let toastTimer: ReturnType<typeof setTimeout>;
+
+    const loadUser = async (session: import('@supabase/supabase-js').Session | null) => {
+      if (session) {
+        setAuthenticated(true);
+        const { supabase: sb } = await import('../lib/supabaseClient');
+        const nick = await getNickname(session.user.id);
+        setNickname(nick);
+        if (nick) {
+          setShowToast(true);
+          toastTimer = setTimeout(() => setShowToast(false), 4000);
+        }
+      } else {
+        setAuthenticated(false);
+        setNickname(null);
+      }
+    };
+
+    // Initial load
+    import('../lib/supabaseClient').then(({ supabase: sb }) => {
+      sb.auth.getSession().then(({ data: { session } }) => loadUser(session));
+
+      // Reactive — updates whenever auth state changes
+      const { data: { subscription } } = sb.auth.onAuthStateChange((_event, session) => {
+        loadUser(session);
+      });
+
+      return () => {
+        subscription.unsubscribe();
+        clearTimeout(toastTimer);
+      };
+    });
   }, []);
 
   const handleLogout = async () => {
@@ -629,6 +662,21 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
+
+      {/* ── Welcome Toast ── */}
+      {showToast && nickname && (
+        <div style={{position:'fixed',top:'20px',left:'50%',transform:'translateX(-50%)',zIndex:9999,animation:'slideDown 0.4s ease-out'}}>
+          <div style={{display:'flex',alignItems:'center',gap:'12px',background:'rgba(15,23,42,0.95)',border:'1px solid rgba(16,185,129,0.4)',borderRadius:'16px',boxShadow:'0 20px 60px rgba(0,0,0,0.5),0 0 40px rgba(16,185,129,0.1)',padding:'16px 24px',backdropFilter:'blur(16px)'}}>
+            <span style={{fontSize:'24px'}}>👋</span>
+            <div>
+              <div style={{color:'#34d399',fontWeight:900,fontSize:'16px'}}>{nickname}님, 환영합니다!</div>
+              <div style={{color:'#94a3b8',fontSize:'12px',marginTop:'2px'}}>AirVent에 오신 것을 환영해요</div>
+            </div>
+            <button onClick={() => setShowToast(false)} style={{marginLeft:'8px',color:'#475569',background:'none',border:'none',cursor:'pointer',fontSize:'18px',lineHeight:'1'}} onMouseOver={e=>(e.currentTarget.style.color='#94a3b8')} onMouseOut={e=>(e.currentTarget.style.color='#475569')}>✕</button>
+          </div>
+        </div>
+      )}
+      <style>{`@keyframes slideDown{from{opacity:0;transform:translate(-50%,-16px)}to{opacity:1;transform:translate(-50%,0)}}`}</style>
 
       {/* ── Header ── */}
       <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/90 backdrop-blur-md">
@@ -730,8 +778,8 @@ export default function LandingPage() {
                       <a href="/demo/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-slate-700 text-slate-400 font-semibold px-8 py-4 text-base hover:border-slate-500 hover:text-white transition">
                         {tx.heroMore}
                       </a>
-                      <Link to="/judge" className="inline-flex items-center gap-2 rounded-xl border border-blue-500/50 text-blue-400 font-semibold px-8 py-4 text-base hover:border-blue-400 hover:text-white transition">
-                        {tx.heroWebDemo}
+                      <Link to="/login" className="inline-flex items-center gap-2 rounded-xl border border-emerald-500/50 text-emerald-400 font-semibold px-8 py-4 text-base hover:border-emerald-400 hover:text-white transition">
+                        {lang === "ko" ? "로그인" : lang === "ja" ? "ログイン" : lang === "zh-TW" ? "登錄" : "Login"}
                       </Link>
                     </>
                   )}
